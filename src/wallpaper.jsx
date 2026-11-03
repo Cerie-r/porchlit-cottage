@@ -1,0 +1,6 @@
+import React,{useMemo} from 'react';
+import * as T from 'three';
+import {useDecorValue} from './decor-context.jsx';
+const cache=new Map();
+export function wallpaperTexture(id){if(cache.has(id))return cache.get(id);const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle={plain:'#eee5d9',blue:'#e2ebed',rose:'#f2e7e3',linen:'#e6dfd2'}[id]||'#eee5d9';x.fillRect(0,0,256,256);if(id==='blue'){x.fillStyle='#bdced3';for(let i=20;i<256;i+=48){x.fillRect(i,0,2,256);x.fillRect(i+5,0,1,256);}}if(id==='rose'){for(let y=32;y<256;y+=64)for(let a=32;a<256;a+=64){x.fillStyle='#9eac94';x.beginPath();x.ellipse(a+7,y+5,8,3,-.6,0,7);x.fill();x.fillStyle='#d1a2a9';for(let k=0;k<5;k++){x.beginPath();x.arc(a+Math.cos(k*1.26)*3,y+Math.sin(k*1.26)*3,3,0,7);x.fill();}}}if(id==='linen'){x.fillStyle='#b8a99322';for(let i=0;i<256;i+=4){x.fillRect(i,0,1,256);x.fillRect(0,i,256,1);}}const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;t.wrapS=t.wrapT=T.RepeatWrapping;cache.set(id,t);return t;}
+export function WallpaperMaterial({room,color}){const id=useDecorValue('wall',null,'room:'+room);const map=useMemo(()=>{if(!id)return null;const t=wallpaperTexture(id).clone();t.repeat.set(5,2);return t;},[id]);React.useEffect(()=>()=>map?.dispose(),[map]);return <meshStandardMaterial color={id?'#ffffff':color} map={map} roughness={.92}/>;}

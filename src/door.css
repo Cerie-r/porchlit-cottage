@@ -1,0 +1,103 @@
+/* The door, from both sides (door.jsx). */
+.visit-plate button.done{background:transparent;color:#a99098}
+.visit-plate{flex-wrap:wrap;justify-content:center;width:max-content;max-width:calc(100vw - 24px);box-sizing:border-box;white-space:normal}
+@media(max-width:600px){.visit-plate{gap:6px;padding:8px 8px 8px 14px}.visit-plate button{padding:8px 11px}}
+
+.door-overlay{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;background:rgba(70,56,60,.2);overflow:auto}
+.door-panel{position:relative;width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;padding:24px 24px 20px;border:1px solid #ead9df;border-radius:26px;background:#fff9f5f7;backdrop-filter:blur(18px);box-shadow:0 26px 80px #57404826;color:#5f5056;animation:door-in .2s ease-out}
+@keyframes door-in{from{opacity:0;transform:translateY(6px)}}
+.door-panel header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 8px}
+.door-panel header span{font-size:10px;letter-spacing:.22em;color:#b08a98}
+.door-panel h2{margin:4px 0 0;font-size:22px;font-weight:400;letter-spacing:.03em;color:#6d5160}
+.door-close{width:36px;height:36px;display:grid;place-items:center;flex:none;border:0;border-radius:50%;background:transparent;color:#9b8a8f;cursor:pointer}
+.door-close:hover{background:#a66e8514}
+.door-panel h3{margin:18px 0 8px;font-size:14px;font-weight:500;color:#6d5a63}
+.door-lead,.door-hint-line,.door-empty{margin:0;font-size:13px;line-height:1.7;color:#9b8590}
+.door-hint-line{margin-top:8px;font-size:12px}
+.door-error{margin:10px 0 0;font-size:13px;color:#b0566f}
+.door-panel button{font:inherit}
+.door-primary{min-height:40px;padding:9px 20px;border:0;border-radius:999px;background:#c98aa5;color:#fff;cursor:pointer}
+.door-primary:disabled{opacity:.5;cursor:default}
+
+/* Leaving something. */
+.mail-things{display:flex;flex-wrap:wrap;gap:6px}
+.mail-things button{display:grid;gap:1px;padding:8px 12px;border:1px solid #e6d3d9;border-radius:14px;background:#fffaf6;color:#6d5a63;text-align:left;cursor:pointer}
+.mail-things button small{font-size:11px;color:#a9949d}
+.mail-things button.chosen{border-color:#c98aa5;background:#f6e2e8}
+.mail-note{position:relative;display:block}
+.mail-note textarea{box-sizing:border-box;width:100%;padding:12px 14px 22px;border:1px solid #e6d3d9;border-radius:16px;background:#fffdf9;color:#5f5056;font:inherit;font-size:16px;line-height:1.7;resize:vertical}
+.mail-note small{position:absolute;right:12px;bottom:8px;font-size:11px;color:#b5a1a9}
+.mail-note small.over{color:#b0566f}
+.door-panel footer{display:flex;justify-content:flex-end;margin-top:14px}
+
+/* What's waiting at one's own door. */
+.door-knocks{margin:6px 0 4px;padding:9px 14px;border-radius:14px;background:#f4d6de4d;font-size:13px;color:#8a5f6f}
+.door-waiting{display:grid;gap:10px;margin-top:10px}
+.door-gift{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;padding:12px;border:1px solid #ecdbe0;border-radius:18px;background:#fffaf6}
+.door-gift-picture{width:92px;height:92px;display:grid;place-items:center;border-radius:14px;background:#f8efe9;overflow:hidden}
+.door-gift-picture img{width:100%;height:100%;object-fit:contain}
+.door-gift-picture .drawing{width:46px;height:46px;border-radius:50%;background:#f3e6e2;animation:bag-breathe 1.1s ease-in-out infinite alternate}
+.door-gift-picture .unknown{font-size:22px;color:#c4afb7}
+.door-note-mark{width:46px;height:36px;fill:#fbf3e4;stroke:#c9a3ad;stroke-width:1.4;stroke-linejoin:round}
+.door-gift-words{min-width:0}
+.door-gift-from{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;margin:0}
+.door-gift-from strong{font-size:15px;font-weight:500;color:#6d5160}
+.door-gift-from small{font-size:11px;color:#a9949d}
+.door-gift-from span{margin-left:auto;font-size:11px;color:#b5a1a9}
+.door-gift-what{margin:3px 0 0;font-size:13px;color:#8f7e83}
+.door-gift blockquote{margin:8px 0 0;padding:8px 12px;border-left:2px solid #e2c3cd;border-radius:0 10px 10px 0;background:#fdf6f0;font-size:13.5px;line-height:1.7;color:#5f5056;white-space:pre-wrap;overflow-wrap:anywhere}
+.door-gift-actions{display:flex;gap:8px;margin-top:10px}
+.door-gift-actions button:not(.door-primary){min-height:40px;padding:9px 16px;border:1px solid #e6d3d9;border-radius:999px;background:transparent;color:#86717b;cursor:pointer}
+.door-book-title small{margin-left:6px;font-size:11px;font-weight:400;color:#b09aa3}
+.door-book{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.door-book li{padding:8px 12px;border-radius:12px;background:#fbf4f0;font-size:13px;line-height:1.6;color:#6f6066}
+.door-book li span{display:inline-block;min-width:64px;margin-right:8px;font-size:11.5px;color:#b09aa3}
+.door-book li q{display:block;margin-top:2px;font-size:12.5px;color:#8f7e83;quotes:'「' '」';white-space:pre-wrap;overflow-wrap:anywhere}
+.door-studio{position:fixed;left:0;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none}
+
+@media(max-width:600px){
+  .door-panel{padding:20px 16px 16px;border-radius:22px}
+  .door-gift{grid-template-columns:72px minmax(0,1fr);gap:10px}
+  .door-gift-picture{width:72px;height:72px}
+}
+.mail-note textarea:focus{outline:none;border-color:#c98aa5;box-shadow:0 0 0 3px #f2dbe3}
+.mail-things button:focus-visible,.door-panel button:focus-visible{outline:2px solid #c98aa5;outline-offset:2px}
+.door-gift-actions button.door-block,.door-block{min-height:32px;margin-left:auto;padding:4px 8px;border:0;border-radius:999px;background:transparent;color:#b5a1a9;font-size:12px;cursor:pointer}
+.door-gift-actions button.door-block{min-height:40px}
+.door-block:hover:not(:disabled){color:#8a5f6f}
+.door-book li .door-block,.door-book li .door-blocked{float:right;margin:-6px -6px 0 8px}
+.door-blocked{display:inline-block;padding:4px 2px;font-style:normal;font-size:11.5px;color:#c4afb7}
+.door-block-ask{clear:both;margin-top:10px;padding:10px 12px;border-radius:14px;background:#f4d6de4d;font-size:13px;line-height:1.7;color:#7a5966}
+.door-block-ask p{margin:0}
+.door-block-ask div{display:flex;gap:8px;margin-top:8px}
+.door-block-ask button{min-height:36px;padding:6px 16px;border:1px solid #e6d3d9;border-radius:999px;background:transparent;color:#86717b;cursor:pointer}
+.door-block-ask .door-block-yes{border-color:#c98aa5;background:#c98aa5;color:#fff}
+.door-blocked-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.door-blocked-list li{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;padding:8px 12px;border-radius:12px;background:#fbf4f0;font-size:13px;color:#6f6066}
+.door-blocked-list strong{font-weight:500;color:#6d5160}
+.door-blocked-list small{font-size:11px;color:#a9949d}
+.door-blocked-list button{margin-left:auto;min-height:32px;padding:4px 14px;border:1px solid #e6d3d9;border-radius:999px;background:transparent;color:#86717b;cursor:pointer}
+/* Reporting someone (asked first, like blocking): a reason, a few words, and it blocks them too. */
+.door-gift-actions{flex-wrap:wrap;align-items:center}
+.door-gift-actions button{flex:none;white-space:nowrap}
+.door-gift-more{display:flex;margin-left:auto}
+.door-gift-more .door-block{margin-left:0}
+.door-report-reasons{flex-wrap:wrap}
+.door-block-ask .door-report-reasons button{min-height:34px;padding:5px 14px}
+.door-block-ask .door-report-reasons button.chosen{border-color:#c98aa5;background:#f6e7ea;color:#77525e}
+.door-report-ask textarea{display:block;width:100%;box-sizing:border-box;margin-top:8px;padding:8px 10px;border:1px solid #e6d3d9;border-radius:10px;background:#fffdfc;color:#6f6066;font:inherit;font-size:13px;line-height:1.6;resize:vertical}
+.door-report-ask .door-block-yes:disabled{opacity:.55}
+.visit-plate .visit-report{background:transparent;color:#b5a1a9;padding-left:8px;padding-right:8px}
+.visit-said{font-size:12px;color:#a7707f}
+.visit-plate.reporting{width:min(360px,calc(100vw - 24px));flex-direction:column;align-items:stretch;gap:6px;padding:12px 14px;white-space:normal}
+.visit-plate.reporting .door-report-ask{margin:0;padding:0;background:transparent;text-align:left}
+.visit-plate.reporting p{display:block}
+.visit-plate.reporting .door-block-ask button{min-height:36px;padding:6px 16px;border:1px solid #e6d3d9;border-radius:999px;background:transparent;color:#86717b}
+.visit-plate.reporting .door-block-ask button.chosen{border-color:#c98aa5;background:#f6e7ea;color:#77525e}
+.visit-plate.reporting .door-block-ask .door-block-yes{border-color:#c98aa5;background:#c98aa5;color:#fff}
+/* Going out together (src/door-outing.jsx). */
+.outing-panel .outing-lead{margin:6px 0 0;font-size:16px;line-height:1.75;color:#6d5160}
+.outing-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.outing-actions button:not(.door-primary){min-height:40px;padding:9px 18px;border:1px solid #ead9df;border-radius:999px;background:transparent;color:#8a7380;cursor:pointer}
+.outing-go{min-width:132px;font-size:17px;letter-spacing:.3em}
+.door-panel .outing-foot{justify-content:space-between;align-items:center;gap:12px;margin-top:20px;padding-top:12px;border-top:1px solid #f0e3e7;font-size:12px;color:#a9949d}

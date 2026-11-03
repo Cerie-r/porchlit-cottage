@@ -1,0 +1,23 @@
+/* The sky behind the house. The 3D canvas is transparent, so these layers sit
+   between the .app gradient and .canvas-wrap (z-index 2); the title (.copy,
+   z-index 8) stays in front. */
+.sky{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;transition:opacity 2s ease;animation:sky-in 1.6s ease-out}
+@keyframes sky-in{from{opacity:0}}
+
+/* Clouds: soft matte puffs with a faint shadow underneath, drifting slowly. */
+.sky .cloud{position:absolute;width:calc(var(--w) * 1px);height:calc(var(--w) * .5px);margin-left:calc(var(--w) * -.5px);opacity:var(--o);overflow:visible;filter:drop-shadow(0 7px 9px rgba(120,96,112,.10));animation:cloud-drift var(--dur) ease-in-out var(--delay) infinite alternate;will-change:transform}
+@keyframes cloud-drift{from{transform:translateX(calc(var(--drift) * -1))}to{transform:translateX(var(--drift))}}
+
+/* Stars: each is a soft radial dot centred in a small box, so it stays round
+   at any size and pixel density. */
+.sky .star{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;background:radial-gradient(circle,var(--tint) 0 var(--core),transparent var(--edge));opacity:var(--o)}
+.sky .star.twinkle{animation:star-twinkle var(--dur) ease-in-out var(--delay) infinite}
+.sky .star.glint{width:16px;height:16px;margin:-8px 0 0 -8px;background:radial-gradient(circle,var(--tint) 0 1px,rgba(255,246,232,.3) 1.8px,transparent 5px)}
+.sky .star.glint::before,.sky .star.glint::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:.6}
+.sky .star.glint::before{width:13px;height:1px;background:linear-gradient(90deg,transparent,var(--tint),transparent)}
+.sky .star.glint::after{width:1px;height:13px;background:linear-gradient(transparent,var(--tint),transparent)}
+@keyframes star-twinkle{0%,100%{opacity:var(--o)}50%{opacity:calc(var(--o)*.3)}}
+
+/* Phones: a lighter sky, smaller clouds. */
+@media(max-width:700px){.sky .extra{display:none}.sky .cloud{width:calc(var(--w) * .58px);height:calc(var(--w) * .29px);margin-left:calc(var(--w) * -.29px)}}
+@media(prefers-reduced-motion:reduce){.sky,.sky .cloud,.sky .star.twinkle{animation:none}}

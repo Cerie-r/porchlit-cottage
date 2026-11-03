@@ -1,0 +1,366 @@
+/* The porch light: the lantern in the top bar, and the card it opens. */
+
+.porch-lamp {
+  position: relative;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 9px 16px 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 34px rgba(86,65,72,.1);
+  color: #7d6d72;
+  cursor: pointer;
+}
+.porch-lamp + .walk-button { margin-left: 0; }
+.porch-lamp:hover { background: rgba(255,249,245,.9); }
+.porch-lamp.lit {
+  color: #86643f;
+  background: rgba(255,245,228,.9);
+  border-color: rgba(214,170,110,.5);
+  box-shadow: 0 12px 34px rgba(86,65,72,.1), 0 0 26px rgba(255,190,110,.42);
+}
+.porch-dot {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c2768d;
+  box-shadow: 0 0 0 2px #fff8f1;
+}
+
+.lantern-icon { width: 22px; height: 22px; flex-shrink: 0; overflow: visible; }
+.lantern-glass { fill: rgba(255,255,255,.4); }
+.lantern-flame { fill: #cfc2ba; }
+.lantern-halo { fill: rgba(255,196,122,.32); }
+.lit .lantern-glass { fill: #ffe4b0; }
+.lit .lantern-flame { fill: #ef9f45; }
+.porch-lamp.working .lantern-flame { animation: porch-flicker 1.2s ease-in-out infinite; }
+@keyframes porch-flicker { 50% { opacity: .45; } }
+
+.porch-card {
+  position: absolute;
+  z-index: 46;
+  top: calc(80px + env(safe-area-inset-top));
+  right: max(22px, env(safe-area-inset-right));
+  width: min(384px, calc(100% - 30px));
+  max-height: calc(100vh - 104px - env(safe-area-inset-top));
+  max-height: calc(100dvh - 104px - env(safe-area-inset-top));
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 30px 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255,249,245,.94);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 26px 90px rgba(87,63,72,.24);
+  color: #554a4e;
+  animation: porch-in .2s ease-out;
+}
+.porch-card.lit { background: linear-gradient(180deg, rgba(255,243,224,.97), rgba(255,249,245,.95) 34%); }
+@keyframes porch-in { from { opacity: 0; transform: translateY(-6px); } }
+
+/* Above everything else on the page (close-ups, the studio, the wardrobe): a
+   page that's out of date mustn't be worked in. */
+.porch-veil { position: fixed; inset: 0; z-index: 3000; background: rgba(70,56,60,.35); backdrop-filter: blur(3px); }
+.porch-veil + .porch-card { position: fixed; z-index: 3001; }
+.porch-glow { position: absolute; top: 22px; right: 60px; color: #b8a69c; pointer-events: none; }
+.porch-glow .lantern-icon { width: 34px; height: 34px; }
+.porch-card.lit .porch-glow { color: #a57a4c; }
+.porch-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #9b8a8f;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.porch-close:hover { background: rgba(166,110,133,.08); }
+
+.porch-form { display: grid; gap: 12px; }
+.porch-form .eyebrow { margin: 0; }
+.porch-form h2 { margin: -4px 0 0; font-size: 28px; font-weight: 400; letter-spacing: .02em; }
+.porch-lead { margin: 0 0 4px; color: #8f7e83; font-size: 14px; line-height: 1.75; }
+
+.porch-field { display: grid; gap: 6px; font-size: 13px; color: #76666b; }
+.porch-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid #dccbc6;
+  border-radius: 13px;
+  background: #fffdf9;
+  color: #554a4e;
+  font: inherit;
+  font-size: 16px;
+}
+.porch-field input:focus { outline: none; border-color: #c9a2b1; box-shadow: 0 0 0 3px rgba(166,110,133,.14); }
+.porch-field small { color: #a39398; font-size: 11.5px; line-height: 1.5; }
+.porch-secret { position: relative; display: block; }
+.porch-secret input { padding-right: 64px; }
+.porch-secret button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #a66e85;
+  font-size: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.porch-field .porch-code-input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
+
+.porch-error { margin: 0; padding: 8px 11px; border-radius: 10px; background: rgba(193,107,127,.09); color: #9c4c5d; font-size: 13px; line-height: 1.6; }
+
+.porch-primary {
+  min-height: 46px;
+  margin-top: 4px;
+  border: 1px solid #e0b57c;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fde6c1, #f2c98f);
+  color: #5a3f2a;
+  font-size: 15px;
+  letter-spacing: .08em;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(201,143,82,.22);
+}
+.porch-primary:hover { background: linear-gradient(180deg, #fee9c8, #f0c283); }
+.porch-primary:disabled { opacity: .5; cursor: default; box-shadow: none; }
+.porch-quiet {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid #ddc9b9;
+  border-radius: 14px;
+  background: #fff7ec;
+  color: #6f5a52;
+  font-size: 13px;
+  cursor: pointer;
+}
+.porch-quiet:hover { background: #fbeedd; }
+.porch-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; margin: 2px 0 0; }
+.porch-links button {
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  color: #a66e85;
+  font-size: 13px;
+  text-decoration: underline;
+  text-decoration-color: rgba(166,110,133,.35);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.porch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.porch-row small { color: #8f7e83; font-size: 12px; }
+.porch-end { justify-content: space-between; margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(102,80,88,.12); }
+
+.porch-codes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px dashed #d8c3b6;
+  border-radius: 16px;
+  background: #fffaf2;
+  list-style: none;
+  counter-reset: key;
+}
+.porch-codes li { display: flex; align-items: baseline; gap: 7px; color: #b3a196; font-size: 11px; counter-increment: key; }
+.porch-codes li::before { content: counter(key); min-width: 14px; text-align: right; }
+.porch-codes code { color: #5d4a42; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; letter-spacing: .05em; }
+
+.porch-who { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.porch-who strong { font-size: 18px; font-weight: 500; }
+.porch-who span { color: #a39398; font-size: 13px; }
+.porch-sync { margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(255,232,196,.5); color: #79614c; font-size: 13px; line-height: 1.6; }
+.porch-sync-offline, .porch-sync-error { background: rgba(193,107,127,.08); color: #94586a; }
+.porch-sync-newer { background: rgba(214,170,110,.2); }
+.porch-note { margin: 0; color: #8f7e83; font-size: 13px; }
+.porch-note.low { color: #9c4c5d; }
+.porch-spare { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid rgba(102,80,88,.12); border-radius: 14px; background: rgba(255,255,255,.45); }
+.porch-spare p { margin: 0; display: grid; gap: 2px; color: #6f5f63; font-size: 13px; }
+.porch-spare small { color: #a39398; font-size: 11.5px; }
+
+.porch-choices { display: grid; gap: 10px; }
+.porch-choices button {
+  display: grid;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid #e0cdbf;
+  border-radius: 16px;
+  background: #fffaf3;
+  color: #5d4c47;
+  text-align: left;
+  cursor: pointer;
+}
+.porch-choices button:hover { border-color: #d7a46c; background: #fff4e3; }
+.porch-choices button:disabled { opacity: .6; cursor: default; }
+.porch-choices button.porch-pick { border-color: #dcb07a; background: #fff3e0; box-shadow: 0 6px 18px rgba(201,143,82,.14); }
+.porch-choices strong i { margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: #f5d9b0; color: #7a5534; font-size: 11px; font-style: normal; vertical-align: 2px; }
+.porch-confirm { display: grid; gap: 8px; padding: 12px 14px; border-radius: 14px; background: rgba(193,107,127,.08); color: #8c4f5f; font-size: 13px; line-height: 1.6; }
+.porch-confirm p { margin: 0; }
+.porch-wide { width: 100%; }
+.porch-versions { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.porch-versions li { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid rgba(102,80,88,.12); border-radius: 14px; background: rgba(255,255,255,.5); }
+.porch-versions p { margin: 0; display: grid; gap: 2px; }
+.porch-versions strong { font-size: 14px; font-weight: 500; }
+.porch-versions span { color: #8f7e83; font-size: 12px; }
+.porch-choices strong { font-size: 16px; font-weight: 500; }
+.porch-choices span { color: #8a7570; font-size: 13px; }
+.porch-choices small { color: #a39398; font-size: 12px; }
+.porch-choices em { color: #b0855a; font-size: 11.5px; font-style: normal; }
+
+@media (max-width: 700px) {
+  .porch-lamp { min-height: 40px; padding: 8px 10px; }
+  .porch-lamp span { display: none; }
+  .porch-dot { top: 4px; right: 4px; }
+  .porch-card {
+    top: calc(64px + env(safe-area-inset-top));
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100vh - 80px - env(safe-area-inset-top));
+    max-height: calc(100dvh - 80px - env(safe-area-inset-top));
+    padding: 26px 20px 20px;
+    border-radius: 24px;
+  }
+  .porch-form h2 { font-size: 24px; }
+  .porch-glow { right: 56px; }
+}
+@media (max-width: 360px) {
+  .porch-codes { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .porch-card, .porch-lamp.working .lantern-flame { animation: none; }
+}
+
+/* Phones: the top bar holds the lantern too, so it gives a little. The
+   room name shrinks first; the buttons keep their size and don't wrap. */
+@media (max-width: 700px) {
+  .topbar { gap: 8px; }
+  .topbar .brand-copy { min-width: 0; overflow: hidden; }
+  .topbar .brand-copy strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; letter-spacing: .1em; }
+  .topbar .walk-button { flex-shrink: 0; white-space: nowrap; padding: 10px 13px; }
+  .topbar .porch-lamp, .topbar .brand { flex-shrink: 0; }
+}
+
+/* The light the street sees at the door. */
+.porch-door-light{margin:14px 0 6px;text-align:left}
+.porch-door-title{margin:0 0 7px;font-size:12px;letter-spacing:.5px;color:#9b8174}
+.porch-door-options{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.porch-door-options button{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid #e4d5c6;border-radius:12px;background:#fffaf3;color:#6d5547;font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.porch-door-options button span{display:flex;flex-direction:column;gap:1px}
+.porch-door-options button small{font-size:11px;color:#a08a80}
+.porch-door-options button.chosen{border-color:#c98aa5;background:#f6e7ea;color:#77525e}
+.porch-door-options button:disabled{opacity:.7;cursor:default}
+.porch-door-dot{flex:none;width:9px;height:9px;margin-top:4px;border-radius:50%;background:#6d6470}
+.porch-door-dot.on{background:#ffc477;box-shadow:0 0 8px #ffc477}
+.porch-door-dot.dim{background:#ffc477;opacity:.55}
+.porch-door-dot.dnd{background:#c98aa5}
+.porch-door-dot.off{background:#4e4b5c}
+/* What the home the place is run by keeps (src/porch-keeper.jsx): invitations. */
+.porch-keeper{margin:4px 0 2px;text-align:left}
+.porch-invite-write{display:grid;gap:10px}
+.porch-invite-fresh{display:grid;gap:6px;padding:12px 14px;border:1px dashed #c98aa5;border-radius:14px;background:#fff6f4;text-align:left}
+.porch-invite-fresh span{font-size:12px;color:#9b8174}
+.porch-invite-fresh strong{color:#77525e;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:24px;font-weight:500;letter-spacing:.12em}
+.porch-invite-fresh p{margin:0;font-size:12.5px;line-height:1.6;color:#8f7e83;user-select:text;-webkit-user-select:text}
+.porch-invites strong{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px}
+.porch-invites code{color:#5d4a42;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;letter-spacing:.05em}
+.porch-invites em{font-style:normal;font-size:12px;color:#8a6f7a}
+.porch-invites li.used,.porch-invites li.torn,.porch-invites li.expired{opacity:.72}
+/* ...and reports. */
+.porch-keeper .porch-waiting{border-color:#c98aa5;color:#8a4f66}
+.porch-reports strong{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px}
+.porch-reports strong small{font-size:11px;font-weight:400;color:#a9949d}
+.porch-reports blockquote{margin:0;padding:6px 10px;border-left:3px solid #ead3da;border-radius:4px;background:#fff8f6;font-size:13px;line-height:1.6;color:#6f6066;white-space:pre-wrap;overflow-wrap:anywhere}
+.porch-report-what{font-size:12.5px;color:#7d6a71}
+.porch-report-words{font-size:12.5px;color:#8f7e83;white-space:pre-wrap;overflow-wrap:anywhere}
+.porch-report-photo{max-width:160px;border-radius:8px;border:1px solid #eadbd5;image-rendering:auto}
+.porch-report-ask small{flex:1 1 100%}
+.porch-danger{border-color:#c98aa5;background:#c98aa5;color:#fff}
+.porch-danger:hover{background:#b97895}
+.porch-reports li.closed{opacity:.75}
+.porch-reports-done{margin-top:4px;text-align:left}
+.porch-reports-done summary{cursor:pointer;font-size:12.5px;color:#9b8174;padding:4px 0}
+/* Spare keys left, and a fresh set. */
+.porch-codes-left{justify-content:space-between}
+.porch-codes-left .porch-quiet{padding-top:4px;padding-bottom:4px;font-size:12.5px}
+/* Hanging a door plate: saying one is an adult, and answering questions without an invitation. */
+.porch-check{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1px solid #e4d5c6;border-radius:12px;background:#fffaf3;color:#6d5547;font-size:13.5px;text-align:left;cursor:pointer}
+.porch-check input{width:18px;height:18px;margin:1px 0 0;accent-color:#c98aa5;flex:none}
+.porch-check span{display:flex;flex-direction:column;gap:2px}
+.porch-check small{font-size:11.5px;color:#a08a80}
+.porch-quiz-switch{justify-content:flex-start;margin-top:-4px}
+.porch-quiz{display:grid;gap:12px;margin:0;padding:12px 14px;border:1px solid #e4d5c6;border-radius:14px;background:#fffaf3;text-align:left}
+.porch-quiz legend{padding:0 4px;font-size:13px;color:#8a6f7a}
+.porch-quiz>small{font-size:12px;color:#a08a80}
+.porch-quiz-question p{margin:0 0 7px;font-size:13.5px;line-height:1.5;color:#5d4a42}
+.porch-quiz-choices{display:flex;flex-wrap:wrap;gap:6px}
+.porch-quiz-choices button{padding:7px 12px;border:1px solid #e4d5c6;border-radius:999px;background:#fff;color:#6d5547;font:inherit;font-size:13px;cursor:pointer}
+.porch-quiz-choices button.chosen{border-color:#c98aa5;background:#f6e7ea;color:#77525e}
+.porch-quiz textarea,.porch-question-form textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #e4d5c6;border-radius:10px;background:#fff;color:#5d4a42;font:inherit;font-size:13.5px;line-height:1.6;resize:vertical}
+/* The keeper's page for it (src/porch-keeper.jsx). */
+.porch-ai-says{display:grid;gap:3px;padding:7px 10px;border:1px dashed #d8c2cb;border-radius:8px;background:#fbf6fa;text-align:left}
+.porch-ai-says span{font-size:11.5px;font-weight:500;color:#8a6f7a}
+.porch-ai-says p{margin:0;font-size:13px;line-height:1.6;color:#6f6066;white-space:pre-wrap;overflow-wrap:anywhere}
+.porch-ai-says.out span,.porch-ai-says.disable span{color:#b0566f}
+.porch-ai-says.out,.porch-ai-says.disable{border-color:#e6b9c6;background:#fff5f7}
+.porch-entries-done{margin:2px 0 6px}
+.porch-entries .porch-entry-answer{display:grid;gap:4px}
+.porch-entries .porch-entry-answer span{font-size:12px;color:#9b8174}
+.porch-entries blockquote{margin:0;padding:6px 10px;border-left:3px solid #ead3da;border-radius:4px;background:#fff8f6;font-size:13px;line-height:1.6;color:#6f6066;white-space:pre-wrap;overflow-wrap:anywhere}
+.porch-entries strong{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px}
+.porch-entries strong small{font-size:11px;font-weight:400;color:#a9949d}
+.porch-entry-door{display:grid;gap:10px;text-align:left}
+.porch-entry-numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.porch-entry-numbers .porch-field span{font-size:12px}
+@media (max-width:420px){.porch-entry-numbers{grid-template-columns:1fr}}
+.porch-questions strong{display:flex;align-items:baseline;gap:6px;font-size:14px}
+.porch-questions em{flex:none;padding:1px 7px;border-radius:999px;background:#f4e5dc;font-style:normal;font-size:11px;color:#8a6f7a}
+.porch-question-choices{display:grid;gap:3px;margin:0;padding:0 0 0 2px;list-style:none;font-size:12.5px;color:#8f7e83}
+.porch-question-choices li.right{color:#77525e;font-weight:500}
+.porch-question-form{display:grid;gap:10px;text-align:left}
+.porch-kinds{grid-template-columns:1fr 1fr}
+.porch-choices{display:grid;gap:6px}
+.porch-choices>small{font-size:11.5px;color:#a08a80}
+.porch-choice{display:flex;align-items:center;gap:8px}
+.porch-choice input{flex:1;min-width:0;padding:8px 10px;border:1px solid #e4d5c6;border-radius:10px;background:#fff;color:#5d4a42;font:inherit;font-size:13.5px}
+.porch-choice button[role=radio]{flex:none;width:26px;height:26px;border:1.5px solid #d9c3c9;border-radius:50%;background:#fff;color:#fff;font-size:13px;line-height:1;cursor:pointer}
+.porch-choice button[role=radio].right{border-color:#c98aa5;background:#c98aa5}
+.porch-choice-drop{flex:none;width:26px;height:26px;border:0;border-radius:50%;background:transparent;color:#b5a1a9;font-size:16px;cursor:pointer}
+.porch-versions .porch-question-choices li{display:block;padding:0;border:0;border-radius:0;background:none}
+.porch-choices>.porch-quiet{justify-self:start;padding:5px 12px;font-size:12.5px}
+/* The street's rules, read before the questions. */
+.porch-quiz-rules p{margin:0 0 6px;font-size:12.5px;color:#8a6f7a}
+.porch-quiz-rules div{max-height:220px;overflow:auto;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid #efe2d8;font-size:13px;line-height:1.75;color:#5d4a42;white-space:pre-wrap;overflow-wrap:anywhere}
+.porch-rules-field textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #e4d5c6;border-radius:10px;background:#fff;color:#5d4a42;font:inherit;font-size:13.5px;line-height:1.7;resize:vertical}
+/* The AIs living in the home (src/porch-residents.jsx). */
+.porch-ais-row{justify-content:space-between}
+.porch-ais-row .porch-quiet{padding-top:4px;padding-bottom:4px;font-size:12.5px}
+.porch-ai-code{display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px}
+.porch-ai-code input{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
+.porch-ai-code .porch-quiet{margin-bottom:1px}
+.porch-ai-found strong{color:#6f3e4c;font-weight:600}
+.porch-versions .porch-confirm span{color:inherit;font-size:inherit}
+.porch-versions .porch-confirm .porch-field>span{font-size:12.5px}
+.porch-versions .porch-confirm .porch-field small{color:#a39398;font-size:11.5px}
+.porch-ai-invite p{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.porch-ai-invite code{color:#5d4a42;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:18px;letter-spacing:.12em;user-select:all}
+.porch-ai-invite span{font-size:12px;color:#a68792}

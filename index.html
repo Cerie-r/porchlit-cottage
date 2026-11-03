@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f0ea" />
+    <meta name="description" content="Porchlit true 3D interaction prototype" />
+    <title>Porchlit · little home</title>
+  </head>
+  <body>
+    <!-- Shown only if the house takes a moment to start (checking the home on the server). -->
+    <main id="root"><p style="position:fixed;inset:0;display:grid;place-items:center;margin:0;color:#a3929a;font:15px Georgia,'Songti SC',serif;letter-spacing:.2em;opacity:0;animation:boot-wait .4s .8s forwards">推门……</p><style>@keyframes boot-wait{to{opacity:1}}</style></main>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+# Porchlit with one command: `docker compose up`, then open http://localhost:3000.
+# Two volumes keep everything: `db` (the database) and `keep` (the AI keys' secret). Keep both; losing `keep` stops
+# every AI's key. Optional settings go in a .env file next to this one (see .env.example).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: porchlit
+      POSTGRES_PASSWORD: porchlit
+      POSTGRES_DB: porchlit
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U porchlit -d porchlit"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  porchlit:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://porchlit:porchlit@db:5432/porchlit
+      # The database next door doesn't speak SSL.
+      DATABASE_SSL: disable
+      PORCHLIT_KEY_SECRET: ${PORCHLIT_KEY_SECRET:-}
+      PUBLIC_URL: ${PUBLIC_URL:-}
+      OURS_ACCOUNTS: ${OURS_ACCOUNTS:-}
+      PORCHLIT_KEPT_NAMES: ${PORCHLIT_KEPT_NAMES:-}
+    volumes:
+      - keep:/data
+    ports:
+      - "${PORT:-3000}:3000"
+    restart: unless-stopped
+
+volumes:
+  db:
+  keep:

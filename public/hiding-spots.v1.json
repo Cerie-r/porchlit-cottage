@@ -1,0 +1,1216 @@
+{
+  "version": 1,
+  "transport": "browser-local",
+  "spots": [
+    {
+      "id": "living.curtain.slot-1",
+      "label": "左帘后侧",
+      "location": "hide:livingWindow",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.curtain.slot-2",
+      "label": "右帘后侧",
+      "location": "hide:livingWindow",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.curtain.slot-3",
+      "label": "左帘内侧",
+      "location": "hide:livingWindow",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.curtain.slot-4",
+      "label": "右帘内侧",
+      "location": "hide:livingWindow",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.curtain.slot-1",
+      "label": "左帘后侧",
+      "location": "hide:bedroomWindow",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.curtain.slot-2",
+      "label": "右帘后侧",
+      "location": "hide:bedroomWindow",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.curtain.slot-3",
+      "label": "左帘内侧",
+      "location": "hide:bedroomWindow",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.curtain.slot-4",
+      "label": "右帘内侧",
+      "location": "hide:bedroomWindow",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.coffee-table.slot-1",
+      "label": "桌面左后",
+      "location": "hide:coffeeTable",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.coffee-table.slot-2",
+      "label": "桌面右后",
+      "location": "hide:coffeeTable",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.coffee-table.slot-3",
+      "label": "桌面左前",
+      "location": "hide:coffeeTable",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.coffee-table.slot-4",
+      "label": "桌面右前",
+      "location": "hide:coffeeTable",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bench.slot-1",
+      "label": "凳内左后",
+      "location": "hide:bedroomBench",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bench.slot-2",
+      "label": "凳内右后",
+      "location": "hide:bedroomBench",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bench.slot-3",
+      "label": "凳内左前",
+      "location": "hide:bedroomBench",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bench.slot-4",
+      "label": "凳内右前",
+      "location": "hide:bedroomBench",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.chair.slot-1",
+      "label": "坐垫左后",
+      "location": "hide:bedroomChair",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.chair.slot-2",
+      "label": "坐垫右后",
+      "location": "hide:bedroomChair",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.chair.slot-3",
+      "label": "坐垫左前",
+      "location": "hide:bedroomChair",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.chair.slot-4",
+      "label": "坐垫右前",
+      "location": "hide:bedroomChair",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rug.slot-1",
+      "label": "左毯角内侧",
+      "location": "hide:rug",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rug.slot-2",
+      "label": "右毯角内侧",
+      "location": "hide:rug",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rug.slot-3",
+      "label": "左毯角外侧",
+      "location": "hide:rug",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rug.slot-4",
+      "label": "右毯角外侧",
+      "location": "hide:rug",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-1",
+      "label": "第一层书后",
+      "location": "hide:studyShelf",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-2",
+      "label": "第二层书后",
+      "location": "hide:studyShelf",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-3",
+      "label": "第三层书后",
+      "location": "hide:studyShelf",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-4",
+      "label": "第四层书后",
+      "location": "hide:studyShelf",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-5",
+      "label": "背板左袋",
+      "location": "hide:studyShelf",
+      "slot": 4,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.bookcase.shelf-6",
+      "label": "背板右袋",
+      "location": "hide:studyShelf",
+      "slot": 5,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.rug.slot-1",
+      "label": "左毯角内侧",
+      "location": "hide:studyRug",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.rug.slot-2",
+      "label": "右毯角内侧",
+      "location": "hide:studyRug",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.rug.slot-3",
+      "label": "左毯角外侧",
+      "location": "hide:studyRug",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.rug.slot-4",
+      "label": "右毯角外侧",
+      "location": "hide:studyRug",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.rug.slot-1",
+      "label": "左毯角内侧",
+      "location": "hide:bedroomRug",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.rug.slot-2",
+      "label": "右毯角内侧",
+      "location": "hide:bedroomRug",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.rug.slot-3",
+      "label": "左毯角外侧",
+      "location": "hide:bedroomRug",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.rug.slot-4",
+      "label": "右毯角外侧",
+      "location": "hide:bedroomRug",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.sofa.slot-1",
+      "label": "左坐垫后侧",
+      "location": "hide:sofa",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.sofa.slot-2",
+      "label": "右坐垫后侧",
+      "location": "hide:sofa",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.sofa.slot-3",
+      "label": "左坐垫前侧",
+      "location": "hide:sofa",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.sofa.slot-4",
+      "label": "右坐垫前侧",
+      "location": "hide:sofa",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bed.slot-1",
+      "label": "左枕头下面",
+      "location": "hide:bedroomBed",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bed.slot-2",
+      "label": "右枕头下面",
+      "location": "hide:bedroomBed",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bed.slot-3",
+      "label": "被角左侧",
+      "location": "hide:bedroomBed",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.bed.slot-4",
+      "label": "被角右侧",
+      "location": "hide:bedroomBed",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.wardrobe.slot-1",
+      "label": "左层板后侧",
+      "location": "hide:bedroomWardrobe",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.wardrobe.slot-2",
+      "label": "右层板后侧",
+      "location": "hide:bedroomWardrobe",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.wardrobe.slot-3",
+      "label": "左层板前侧",
+      "location": "hide:bedroomWardrobe",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.wardrobe.slot-4",
+      "label": "右层板前侧",
+      "location": "hide:bedroomWardrobe",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.desk.slot-1",
+      "label": "抽屉左后",
+      "location": "hide:studyDesk",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.desk.slot-2",
+      "label": "抽屉右后",
+      "location": "hide:studyDesk",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.desk.slot-3",
+      "label": "抽屉左前",
+      "location": "hide:studyDesk",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.desk.slot-4",
+      "label": "抽屉右前",
+      "location": "hide:studyDesk",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.keepsake.slot-1",
+      "label": "盒内左后",
+      "location": "hide:bedroomKeepsake",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.keepsake.slot-2",
+      "label": "盒内右后",
+      "location": "hide:bedroomKeepsake",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.keepsake.slot-3",
+      "label": "盒内左前",
+      "location": "hide:bedroomKeepsake",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.keepsake.slot-4",
+      "label": "盒内右前",
+      "location": "hide:bedroomKeepsake",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.nightstand.slot-1",
+      "label": "上抽屉左后",
+      "location": "hide:bedroomNightstand",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.nightstand.slot-2",
+      "label": "上抽屉右后",
+      "location": "hide:bedroomNightstand",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.nightstand.slot-3",
+      "label": "上抽屉左前",
+      "location": "hide:bedroomNightstand",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "bedroom.nightstand.slot-4",
+      "label": "上抽屉右前",
+      "location": "hide:bedroomNightstand",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.armchair.slot-1",
+      "label": "坐垫左后",
+      "location": "hide:armchair",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.armchair.slot-2",
+      "label": "坐垫右后",
+      "location": "hide:armchair",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.armchair.slot-3",
+      "label": "坐垫左前",
+      "location": "hide:armchair",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.armchair.slot-4",
+      "label": "坐垫右前",
+      "location": "hide:armchair",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.reading-chair.slot-1",
+      "label": "坐垫左后",
+      "location": "hide:studyReading",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.reading-chair.slot-2",
+      "label": "坐垫右后",
+      "location": "hide:studyReading",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.reading-chair.slot-3",
+      "label": "坐垫左前",
+      "location": "hide:studyReading",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.reading-chair.slot-4",
+      "label": "坐垫右前",
+      "location": "hide:studyReading",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.green-book.slot-1",
+      "label": "封面内左后",
+      "location": "hide:greenBook",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.green-book.slot-2",
+      "label": "封面内右后",
+      "location": "hide:greenBook",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.green-book.slot-3",
+      "label": "封面内左前",
+      "location": "hide:greenBook",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.green-book.slot-4",
+      "label": "封面内右前",
+      "location": "hide:greenBook",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rose-book.slot-1",
+      "label": "封面内左后",
+      "location": "hide:roseBook",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rose-book.slot-2",
+      "label": "封面内右后",
+      "location": "hide:roseBook",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rose-book.slot-3",
+      "label": "封面内左前",
+      "location": "hide:roseBook",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.rose-book.slot-4",
+      "label": "封面内右前",
+      "location": "hide:roseBook",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.basket.slot-1",
+      "label": "折毯下左后",
+      "location": "hide:livingBasket",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.basket.slot-2",
+      "label": "折毯下右后",
+      "location": "hide:livingBasket",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.basket.slot-3",
+      "label": "折毯下左前",
+      "location": "hide:livingBasket",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "living.basket.slot-4",
+      "label": "折毯下右前",
+      "location": "hide:livingBasket",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-1.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox0",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-1.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox0",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-1.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox0",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-1.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox0",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-2.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox1",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-2.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox1",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-2.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox1",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-2.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox1",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-3.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox2",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-3.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox2",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-3.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox2",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-3.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox2",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-4.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox3",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-4.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox3",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-4.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox3",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-4.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox3",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-5.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox4",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-5.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox4",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-5.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox4",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-5.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox4",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-6.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox5",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-6.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox5",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-6.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox5",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-6.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox5",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-7.slot-1",
+      "label": "盒内左后",
+      "location": "hide:studyBox6",
+      "slot": 0,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-7.slot-2",
+      "label": "盒内右后",
+      "location": "hide:studyBox6",
+      "slot": 1,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-7.slot-3",
+      "label": "盒内左前",
+      "location": "hide:studyBox6",
+      "slot": 2,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    },
+    {
+      "id": "study.box-7.slot-4",
+      "label": "盒内右前",
+      "location": "hide:studyBox6",
+      "slot": 3,
+      "accepts": [
+        "note",
+        "photo",
+        "small-object"
+      ]
+    }
+  ]
+}

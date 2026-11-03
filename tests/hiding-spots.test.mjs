@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {spotsFor,hidingSpotCatalog,placeLetter,migrateLetters} from '../src/hiding-spots.js';
+import {searchParts,slotVisible} from '../src/search-state.js';
+assert.equal(new Set(hidingSpotCatalog.map(s=>s.id)).size,hidingSpotCatalog.length);
+const spot=spotsFor('hide:studyShelf')[1];assert.equal(spot.id,'study.bookcase.shelf-2');
+let items=placeLetter([],{id:'one',note:'给找到它的人\n慢慢看。',spotId:spot.id});
+assert.equal(items[0].slot,1);assert.equal(items[0].location,'hide:studyShelf');
+assert.equal(slotVisible('study-shelf',{shelf0:1},items[0].slot),false);
+assert.equal(slotVisible('study-shelf',{shelf1:1},items[0].slot),true);
+assert.throws(()=>placeLetter(items,{id:'two',note:'另封信',spotId:spot.id}),/已经/);
+assert.throws(()=>placeLetter([],{id:'bad',note:'信',spotId:'unknown'}),/找不到/);
+assert.throws(()=>placeLetter([],{id:'bad',note:' ',spotId:spot.id}),/内容/);
+assert.throws(()=>placeLetter([],{id:'bad',note:'长'.repeat(2001),spotId:spot.id}),/2000/);
+const legacy={creations:[],containers:{'hide:studyShelf':{gift:{note:'旧信'}},tvUnit:{slots:{left:{note:'电视柜旧信'}}}}};
+const migrated=migrateLetters(legacy);assert.equal(migrated.creations.length,2);assert.equal(legacy.containers['hide:studyShelf'].gift.note,'旧信');
+assert.equal(migrated.containers['hide:studyShelf'].gift,null);assert.equal(migrated.creations[0].note,'旧信');
+assert.deepEqual(migrateLetters(migrated),migrated);
+const full=migrateLetters({creations:[0,1,2,3].map(slot=>({id:'x'+slot,slot,location:'hide:studyShelf'})),containers:{'hide:studyShelf':{gift:{note:'别丢掉'}}}});
+assert.equal(full.creations.at(-1).location,'bag');assert.equal(full.creations.at(-1).note,'别丢掉');
+for(const kind of ['study-shelf','book','living-rug','diorama-keepsake','diorama-basket','fridge','freezer']){assert.ok(searchParts(kind).length);for(let slot=0;slot<4;slot++)assert.equal(slotVisible(kind,{},slot),false);}
+assert.equal(slotVisible('bedroom-bed',{left:1,right:1},2),false);assert.equal(slotVisible('bedroom-bed',{quilt:1},2),true);
+console.log('Letters: stable IDs, independent shelves, occupied slots, validation and lossless/idempotent migration passed.');

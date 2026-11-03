@@ -1,0 +1,33 @@
+/* The community map (street-map.jsx): the streets fill the screen under the
+   top bar; a door plate floats over the home tapped. */
+.street-map{position:fixed;inset:0;z-index:1;overflow:hidden}
+.street-canvas{position:absolute;inset:0}
+.street-canvas canvas{touch-action:none}
+.street-status,.street-problem{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:16px 22px;border:1px solid #e1d3c6;border-radius:18px;background:#fff8eef2;color:#7a6560;font-size:14px;text-align:center;box-shadow:0 8px 26px #65513b1c}
+.street-problem p{margin:0 0 10px}
+.street-problem button{border:1px solid #d9cabb;border-radius:999px;padding:9px 18px;background:#f4e9db;color:#665346;font:inherit;cursor:pointer}
+.street-plate{position:absolute;z-index:3;transform:translate(-50%,calc(-100% - 10px));min-width:150px;max-width:min(240px,calc(100vw - 32px));padding:12px 14px 10px;border:1px solid #e1d3c6;border-radius:16px;background:#fff9f1f5;box-shadow:0 8px 24px #65513b24;color:#6d5547;text-align:center;backdrop-filter:blur(10px)}
+.street-plate::after{content:'';position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:#fff9f1;border-right:1px solid #e1d3c6;border-bottom:1px solid #e1d3c6;transform:rotate(45deg)}
+.street-plate-name{display:flex;flex-direction:column;align-items:center;gap:1px;margin:0}
+.street-plate-name strong{font-size:16px;font-weight:600;letter-spacing:.4px;word-break:break-all}
+.street-plate-name span{font-size:12px;color:#9b8174}
+.street-plate-light{margin:6px 0 8px;font-size:12px;color:#a7707f}
+.street-plate.porch-on .street-plate-light::before,.street-plate.porch-dim .street-plate-light::before{content:'';display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#ffc477;box-shadow:0 0 8px #ffc477;vertical-align:1px}
+.street-plate.porch-dim .street-plate-light::before{opacity:.55;box-shadow:none}
+.street-plate-actions{display:flex;justify-content:center;align-items:center;gap:6px}
+.street-plate-actions button{min-height:36px;padding:7px 13px;border:0;border-radius:18px;background:transparent;color:#6a5650;font:inherit;font-size:13px;cursor:pointer}
+.street-plate-actions button.go{background:#f3e2e4;color:#77525e}
+/* The plaza's plate: a button for each machine in one row, the × up in the corner. */
+.street-plate.plaza{max-width:min(300px,calc(100vw - 32px))}
+.street-plate.plaza .street-plate-actions{gap:5px}
+.street-plate.plaza .street-plate-actions button.go{padding:7px 10px;white-space:nowrap}
+.street-plate.plaza .street-plate-actions button[aria-label]{position:absolute;top:4px;right:4px;min-height:32px;padding:2px 9px}
+.street-plate-actions button[aria-label]{font-size:19px;padding:3px 10px}
+.street-hint{position:absolute;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);margin:0;padding:6px 12px;border-radius:999px;background:#fff8ee99;color:#7d6a64;font-size:12px;white-space:nowrap;pointer-events:none}
+/* At someone's door. */
+.visit-plate{position:fixed;z-index:30;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;border:1px solid #e1d3c6;border-radius:20px;background:#fff9f1f2;box-shadow:0 8px 26px #65513b20;color:#6d5547;white-space:nowrap}
+.visit-plate p{margin:0;display:flex;flex-direction:column;line-height:1.3}
+.visit-plate strong{font-size:15px;font-weight:600}
+.visit-plate small{font-size:12px;color:#a7707f}
+.visit-plate button{min-height:38px;padding:8px 14px;border:0;border-radius:18px;background:#f3e2e4;color:#77525e;font:inherit;font-size:13px;cursor:pointer}
+@media(max-width:600px){.street-hint{font-size:11px}.visit-plate{bottom:calc(132px + env(safe-area-inset-bottom))}}

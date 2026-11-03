@@ -1,0 +1,92 @@
+/* The dessert table, the dessert book and the tag on the glass dome. */
+.dessert-atelier .dessert-stage{height:470px;cursor:grab}
+.dessert-atelier .dessert-stage:active{cursor:grabbing}
+.dessert-card label+label{margin-top:2px}
+.dessert-card input::placeholder{color:#c2ab9a}
+.atelier .dessert-chips button.with-picture{padding:4px 14px 4px 4px}
+.dessert-chips button span{display:grid;text-align:left;line-height:1.25}
+.dessert-chips button small{font-size:10.5px;color:#a0847a}
+.dessert-colors{flex-direction:column;align-items:stretch;gap:12px}
+.atelier .atelier-card.dessert-card{display:flex;flex-direction:column;align-items:stretch}
+.dessert-card label{width:100%}
+@media(max-width:650px){.dessert-atelier .dessert-stage{height:330px}.atelier .atelier-card.dessert-card{gap:9px}.atelier .dessert-card .atelier-save{padding:12px}}
+
+.dessert-book-overlay{display:flex;align-items:flex-start;justify-content:center}
+.dessert-book{width:min(900px,100%);outline:none;color:#795c4d}
+.dessert-book header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px;text-align:center}
+.dessert-book header span{font-family:Georgia,serif;font-style:italic;font-size:14px;letter-spacing:1px;color:#a98a7a}
+.dessert-book header h2{margin:2px 0 0;font-weight:500;font-size:24px;letter-spacing:6px}
+.dessert-book header small{width:52px;font-size:11px;color:#a08877}
+.dessert-book-close{width:52px;height:52px;border-radius:50%;padding:0;border:1px solid #ddc9b9;background:#fff7ec;color:inherit;cursor:pointer;display:grid;place-items:center}
+.dessert-book-close svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.dessert-spread{display:grid;grid-template-columns:1fr;gap:0;padding:16px;border-radius:22px;background:#e6cfc0;box-shadow:0 14px 34px #7a573d26,inset 0 0 0 4px #f2e2d4}
+.dessert-spread.wide{grid-template-columns:1fr 1fr}
+.dessert-page{position:relative;min-height:470px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 26px 34px;background:linear-gradient(90deg,#f6ecdf 0,#fdf8f0 9%,#fdf8f0 91%,#f6ecdf 100%);border-radius:6px;box-shadow:inset 0 0 0 1px #ecdccb}
+.dessert-spread.wide .dessert-page:first-child{border-radius:10px 2px 2px 10px;box-shadow:inset -14px 0 18px -14px #9e7c6455,inset 0 0 0 1px #ecdccb}
+.dessert-spread.wide .dessert-page:last-child{border-radius:2px 10px 10px 2px;box-shadow:inset 14px 0 18px -14px #9e7c6455,inset 0 0 0 1px #ecdccb}
+.dessert-page.blank{background:#fbf4ea}
+.dessert-page-picture{width:100%;height:230px;border-radius:50% 50% 18px 18px / 30% 30% 18px 18px;background:radial-gradient(ellipse at 50% 72%,#efe0cf 0,#fbf3e7 64%,transparent 65%)}
+.dessert-page h3{margin:14px 0 4px;font-weight:500;font-size:20px;letter-spacing:2px}
+.dessert-page p{margin:3px 0;font-size:13px;line-height:1.7}
+.dessert-page-who{color:#a08174;letter-spacing:.5px}
+.dessert-page blockquote{margin:14px 6px 0;font-size:14px;line-height:1.8;color:#7d6156;font-family:Georgia,serif}
+.dessert-page-number{position:absolute;bottom:12px;left:0;right:0;font-size:11px;color:#bfa592}
+.dessert-spread.empty .dessert-page{min-height:220px;justify-content:center}
+.dessert-book-turn{display:flex;align-items:center;justify-content:center;gap:14px;margin:16px 0 4px;font-size:12px;color:#a08877}
+.dessert-book-turn button{border:1px solid #ddc9b9;background:#fff7ec;color:#795c4d;border-radius:18px;padding:9px 16px;cursor:pointer;font:inherit}
+.dessert-book-turn button:disabled{opacity:.4;cursor:default}
+@media(max-width:650px){.dessert-book header h2{font-size:20px;letter-spacing:4px}.dessert-spread{padding:10px}.dessert-page{min-height:430px;padding:16px 16px 30px}.dessert-page-picture{height:210px}}
+
+/* The kitchen's close-up bars keep to one row: a fixed bar placed by its
+   left edge would otherwise only get the room to the right of that point,
+   and wrap into a tall card when the table is in the middle of a phone. */
+
+/* The dome's tag, read in the dining table's close-up: a little paper tag
+   hanging just above the bar, so the bar itself stays one row. */
+.room-camera-actions .dome-tag{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%) rotate(-1.5deg);display:grid;gap:3px;justify-items:center;width:max-content;max-width:min(250px,calc(100vw - 56px));box-sizing:border-box;padding:21px 20px 11px;border:1px solid #e4d5c4;border-radius:12px;background:#fdf8ef;box-shadow:0 6px 18px #65513b22;color:#6d5547;text-align:center;line-height:1.45;white-space:normal;cursor:pointer}
+.room-camera-actions .dome-tag::before{content:'';position:absolute;left:50%;top:8px;width:7px;height:7px;margin-left:-4.5px;border-radius:50%;background:#f1e5d6;box-shadow:inset 0 0 0 1.5px #cfae6c}
+.room-camera-actions .dome-tag b{font-weight:600;font-size:14px;letter-spacing:.5px}
+.room-camera-actions .dome-tag small{font-size:11.5px;color:#9b8174}
+.room-camera-actions .dome-tag em{margin-top:2px;font-style:normal;font-size:13px;color:#a7707f}
+.room-camera-actions button.dome-eat{background:#f3e2e4;color:#77525e}
+
+/* Making it by hand: the way in on the stage, and the kitchen with its card. */
+.dessert-stage .dessert-cook{position:absolute;top:12px;right:12px;z-index:2;display:flex;align-items:center;gap:6px;padding:8px 15px 8px 11px;border:1px solid #dcc3b3;border-radius:20px;background:#fff8efea;color:#8a5e62;font:inherit;font-size:13px;cursor:pointer;box-shadow:0 4px 12px #7a573d14}
+.dessert-cook svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dessert-atelier .dessert-cook-stage{height:520px;cursor:pointer}
+.atelier .atelier-card.dessert-step-card{gap:16px;justify-content:center}
+.dessert-step-dots{display:flex;justify-content:center;gap:7px;margin:0;padding:0;list-style:none}
+.dessert-step-dots li{width:9px;height:9px;border-radius:50%;background:#efe1d1;box-shadow:inset 0 0 0 1px #e2cbbb}
+.dessert-step-dots li.done{background:#d9a6b1;box-shadow:none}
+.dessert-step-dots li.now{background:#fff8ef;box-shadow:inset 0 0 0 2px #c48496;transform:scale(1.25)}
+.dessert-step-name{display:block;text-align:center;font-weight:500;font-size:17px;letter-spacing:3px;color:#77525e}
+.dessert-step-hint{min-height:3.4em;margin:0;font-size:14px;line-height:1.7;text-align:center;color:#795c4d}
+.dessert-step-actions{display:flex;align-items:center;justify-content:center;gap:14px}
+.atelier .dessert-step-enough{padding:9px 18px;border:1px solid #d9b8bf;border-radius:18px;background:#f6e3e6;color:#77525e;font:inherit;font-size:13px;cursor:pointer}
+.atelier .dessert-step-quit{padding:6px 10px;border:0;background:none;color:#a8907f;font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+@media(max-width:650px){.dessert-atelier .dessert-cook-stage{height:430px}.atelier .atelier-card.dessert-step-card{gap:10px;padding:14px}.dessert-step-hint{min-height:3em;font-size:13.5px}}
+
+
+/* Small flavour chips; the dish's paint is still a colour, not a taste. */
+.atelier .dessert-flavours{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 5px;width:100%}
+.atelier .dessert-flavours button{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;min-height:48px;padding:5px 2px;background:none;border:0;border-radius:10px;color:#795c4d;font:inherit;font-size:11px;cursor:pointer}
+.dessert-flavours i{display:block;width:27px;height:27px;border-radius:50%;box-shadow:inset 0 0 0 1px #795c4d22}
+.dessert-flavours button[aria-pressed=true] i{outline:1.5px solid #a47885;outline-offset:3px}
+.dessert-flavours button:focus-visible{outline:2px solid #a47885;outline-offset:2px}
+.dessert-scent-strip{align-self:stretch;text-align:left;transform:rotate(-1deg);margin:18px 4px 10px;padding:12px 16px;background:#f4e9d9;border:1px solid #e7d7bf;box-shadow:1px 3px 5px #795c4d12;font-family:Georgia,serif;font-size:12px}
+.dessert-scent-strip div{display:grid;grid-template-columns:2.5em minmax(0,1fr);gap:12px;padding:3px 0}
+.dessert-scent-strip dt{color:#a68b79;letter-spacing:1px}
+.dessert-scent-strip dd{margin:0;overflow-wrap:anywhere}
+.dessert-page p.dessert-house-taste{font-size:12px;color:#9b8174;line-height:1.8;margin:4px 6px 10px}
+.dessert-written,.dessert-write{width:100%;margin-top:10px}
+.dessert-page p.dessert-inscription{color:#a66e7b;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;text-align:left}
+.dessert-page p.dessert-inscription.machine{color:#787087}
+.dessert-written button,.dessert-write button,.dessert-toast-write{font:inherit;font-size:12px;color:#a47885;background:none;border:0;padding:9px 12px;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.dessert-write textarea{box-sizing:border-box;width:100%;resize:vertical;border:0;border-bottom:1px solid #dbc6b7;background:#fff9f155;color:#8b6070;font:inherit;font-size:14px;line-height:1.8;padding:8px;min-height:90px}
+.dessert-write textarea:focus-visible{outline:1px solid #ba929e;outline-offset:2px}
+.dessert-write>div{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.dessert-write small{margin-right:auto;color:#ad9483;font-size:10px}
+.dessert-toast-write{font-size:inherit;padding:7px 10px}
+/* What is left in a bottle of essence (src/bench-stock.js), after the flavour's name; an empty one is greyed. */
+.dessert-flavours button[data-left] span::after{content:' · ' attr(data-left);color:#a68792;font-size:.85em}
+.dessert-flavours button:disabled,.dessert-chips button:disabled{opacity:.4;filter:grayscale(.8);cursor:default}

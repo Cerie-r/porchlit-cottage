@@ -1,0 +1,17 @@
+import {ShellCrest} from './rococo-details.jsx';
+import {SearchPart} from './search-interaction.jsx';
+import React from 'react';
+// This close-up follows the study's narrow drawers and open shelves.
+export function StudyStorage({kind,Part,Rod,children,gift,onGift}){const cream='#f4e8d5',edge='#e1cdb2',gold='#b78b45';const drawer=kind==='study-desk'||kind==='study-craft';if(kind==='study-box')return <group position={[0,-.85,0]} scale={1.9}><ShellCrest position={[0,.23,.39]} scale={.5}/><Part role="paint" p={[0,0,0]} s={[.95,.06,.72]} c={edge}/>{[-.46,.46].map(x=><Part role="paint" key={x} p={[x,.19,0]} s={[.04,.38,.72]} c={cream}/>)}{[-.34,.34].map(z=><Part role="paint" key={z} p={[0,.19,z]} s={[.9,.38,.04]} c={cream}/>)}<Part p={[0,.22,.365]} s={[.25,.10,.015]} c="#d6b9b1"/><SearchPart id="open" position={[0,.42,-.36]} turn={[-1.6,0,0]}><Part role="paint" p={[0,0,.36]} s={[1.01,.055,.78]} c={cream}/></SearchPart><group position={[0,.05,0]}>{children}{gift&&<group position={[.18,.025,0]} onClick={onGift}><Part s={[.26,.018,.18]} c="#fff3ed"/></group>}</group></group>;return <group position={[0,-.5,0]} scale={drawer?2.5:1.8}>
+ {drawer?<>
+ <Part role="paint" p={[0,.12,-.12]} s={[1.22,.08,.84]} c={cream}/><Part role="paint" p={[0,.55,-.12]} s={[1.27,.08,.87]} c={cream}/>
+ {[-.58,.58].map(x=><Part role="paint" key={x} p={[x,.34,-.12]} s={[.06,.38,.83]} c={cream}/>)}<Part role="paint" p={[0,.33,-.51]} s={[1.15,.36,.04]} c={edge}/>
+ <SearchPart id="open" position={[0,.2,-.12]} move={[0,0,.78]} axis="down"><Part role="paint" s={[1.1,.045,.72]} c={edge}/>{[-.53,.53].map(x=><Part role="paint" key={x} p={[x,.10,0]} s={[.04,.2,.72]} c={cream}/>)}<Part role="paint" p={[0,.10,-.34]} s={[1.03,.2,.04]} c={cream}/><Part role="paint" p={[0,.1,.36]} s={[1.18,.27,.05]} c={cream}/><Part p={[0,.1,.391]} s={[1.10,.20,.018]} c="#eadbc7"/>{kind==='study-desk'?<Rod p={[0,.1,.43]} radius={.025} length={.035} r={[Math.PI/2,0,0]} c={gold}/>:<Part p={[0,.1,.43]} s={[.20,.035,.035]} c={gold}/>}
+ <group position={[0,.04,0]}>{children}{gift&&<group position={[.18,.025,0]} onClick={onGift}><Part s={[.26,.018,.18]} c="#fff3ed"/></group>}</group></SearchPart>
+ </>:<>
+ <Part role="paint" p={[0,.1,0]} s={[1.35,.08,.8]} c={edge}/><Part role="paint" p={[0,1.35,0]} s={[1.43,.09,.85]} c={cream}/><Part role="paint" p={[0,.72,-.38]} s={[1.32,1.2,.05]} c={edge}/>{[-.65,.65].map(x=><Part role="paint" key={x} p={[x,.72,0]} s={[.07,1.25,.8]} c={cream}/>)}
+ {kind==='study-printer'&&<><Part role="paint" p={[-.1,.7,0]} s={[.05,1.2,.77]} c={cream}/>{[.3,.58,.86,1.14].map((y,i)=><SearchPart key={y} id={"drawer"+i} move={[0,0,.68]} axis="down"><Part role="paint" p={[-.37,y-.105,0]} s={[.44,.025,.72]} c={edge}/><Part role="paint" p={[-.37,y,-.34]} s={[.44,.21,.025]} c={cream}/>{[-.58,-.16].map(x=><Part role="paint" key={x} p={[x,y,0]} s={[.025,.21,.72]} c={cream}/>)}<Part role="paint" p={[-.37,y,.4]} s={[.48,.23,.04]} c={cream}/><Rod p={[-.37,y,.44]} radius={.025} length={.03} r={[Math.PI/2,0,0]} c={gold}/></SearchPart>)}</>}
+ {[.48,.87].map(y=><Part role="paint" key={y} p={[kind==='study-printer'?.27:0,y,0]} s={[kind==='study-printer'?.67:1.24,.035,.77]} c={cream}/>)}
+ <group position={[kind==='study-printer'?.26:0,.51,.08]} scale={kind==='study-printer'?.58:1}>{children}{gift&&<group position={[.15,.03,0]} onClick={onGift}><Part s={[.27,.02,.18]} c="#fff3ed"/></group>}</group>
+ </>}
+ </group>;}

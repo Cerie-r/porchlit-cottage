@@ -1,0 +1,16 @@
+/* The drift bottle on the study computer (src/bottle-desk.jsx), in the computer's own paper and ink. */
+.bottle-sea{padding:16px 18px;background:#eee8de;border-radius:10px;margin-top:16px;font-size:12px;line-height:1.8;color:#7d6a5c}
+.bottle-sea p{margin:0 0 6px}
+.bottle-sea .desk-primary{margin:2px 0 8px}
+.bottle-sea .bottle-alert{color:#a0564f}
+.bottle-sea .bottle-said{color:#6e7f6a}
+.bottle-sea .bottle-how{margin:6px 0 0;color:#9d8775;font-size:11px}
+.bottle-thrown{margin-top:22px}
+.bottle-thrown h3{font:16px serif;color:#705c51;margin:0 0 8px;display:flex;align-items:baseline;gap:8px}
+.bottle-thrown h3 small{font:11px sans-serif;color:#a8927f}
+.bottle-thrown ul{list-style:none;margin:0;padding:0}
+.bottle-thrown li{padding:10px 0;border-bottom:1px solid #e6d9c8}
+.bottle-thrown-head{display:flex;justify-content:space-between;gap:12px;margin:0 0 4px;font-size:11px;color:#9d8775}
+.bottle-thrown-head em{font-style:normal;color:#9aa6a8}
+.bottle-thrown-head em.found{color:#b18a6a}
+.bottle-thrown-words{margin:0;font:13px/1.8 serif;color:#6f5c50;white-space:pre-wrap;overflow-wrap:anywhere;max-height:7.2em;overflow:auto}

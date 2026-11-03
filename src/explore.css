@@ -1,0 +1,234 @@
+/* The exploring book (src/explore-woods.jsx): the open page on a warm table, the way home, the basket. */
+.explore {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 35%, #f6eee2 0%, #e9dccb 55%, #cdb9a2 100%);
+  color: #5f4a52;
+  font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+  touch-action: none;
+  user-select: none;
+}
+.explore canvas { display: block; }
+.explore > div:last-child { position: absolute; inset: 0; }
+.explore-top {
+  position: absolute;
+  z-index: 2;
+  top: calc(14px + env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+.explore-top > * { pointer-events: auto; }
+.explore-home, .explore-basket {
+  padding: 8px 16px;
+  border: 1px solid rgba(166, 110, 133, .28);
+  border-radius: 999px;
+  background: rgba(255, 249, 243, .9);
+  color: #7a5262;
+  font: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(87, 63, 72, .12);
+}
+.explore-title { flex: 1; display: flex; flex-direction: column; align-items: center; line-height: 1.25; text-shadow: 0 0 6px rgba(255, 250, 244, .95), 0 0 2px rgba(255, 250, 244, .9); }
+.explore-title b { font-weight: 400; font-size: 20px; letter-spacing: .3em; padding-left: .3em; }
+.explore-title span { font-size: 12px; letter-spacing: .12em; color: #8a6d78; }
+.explore-basket-list {
+  position: absolute;
+  z-index: 2;
+  top: calc(62px + env(safe-area-inset-top));
+  right: 16px;
+  min-width: 150px;
+  margin: 0;
+  padding: 10px 14px;
+  list-style: none;
+  border-radius: 16px;
+  background: rgba(255, 249, 243, .96);
+  box-shadow: 0 12px 30px rgba(87, 63, 72, .16);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.explore-basket-list li { display: flex; align-items: center; gap: 8px; }
+.explore-basket-list img { width: 26px; height: 26px; object-fit: contain; flex: none; }
+.explore-basket-list .empty { color: #a08b90; }
+.explore-hint {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(255, 249, 243, .9);
+  box-shadow: 0 6px 18px rgba(87, 63, 72, .12);
+  font-size: 14px;
+  text-align: center;
+  pointer-events: none;
+}
+/* While the page's pictures come (or when they didn't): a card in the middle of the table. */
+.explore-opening {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: 200px;
+  max-width: calc(100% - 48px);
+  padding: 18px 24px;
+  border-radius: 20px;
+  background: rgba(255, 249, 243, .92);
+  box-shadow: 0 8px 24px rgba(87, 63, 72, .14);
+  text-align: center;
+}
+.explore-opening p { margin: 0; font-size: 15px; }
+.explore-opening small { font-size: 12px; color: #9b8389; }
+.explore-opening-bar { display: block; width: 160px; height: 4px; border-radius: 999px; background: rgba(166, 110, 133, .16); overflow: hidden; }
+.explore-opening-bar i { display: block; height: 100%; border-radius: inherit; background: #c58fa3; transition: width .25s ease; }
+.explore-opening button {
+  padding: 8px 18px;
+  border: 1px solid rgba(166, 110, 133, .32);
+  border-radius: 999px;
+  background: #fff9f3;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 700px) {
+  .explore-title b { font-size: 18px; }
+  .explore-hint { font-size: 13px; }
+}
+.explore.is-dawn { background: radial-gradient(120% 90% at 50% 35%, #fbefe3 0%, #f0dac8 55%, #d8bba3 100%); }
+.explore.is-night { background: radial-gradient(120% 90% at 50% 35%, #4b4a63 0%, #34324a 55%, #24222f 100%); }
+.explore.is-cave { background: radial-gradient(120% 90% at 50% 35%, #5b4b3f 0%, #3e332b 55%, #29221d 100%); }
+.explore.is-night .explore-title, .explore.is-cave .explore-title { color: #f1e6ee; text-shadow: 0 1px 6px rgba(10, 8, 20, .5); }
+.explore.is-night .explore-title span, .explore.is-cave .explore-title span { color: #d5c4d2; }
+
+/* The book from the outside (src/explore-cover.jsx): its cover on the table, opening; the title map, wider than a
+   phone, slid sideways; the tags of the places on it; the diary of trips. */
+.explore-book { touch-action: auto; }
+.explore-cover-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1800px;
+  cursor: pointer;
+}
+.explore-cover {
+  position: relative;
+  height: min(76vh, 132vw);
+  aspect-ratio: 3 / 4;
+  transform-origin: left center;
+  transition: transform .85s cubic-bezier(.45, .05, .35, 1), opacity .85s ease-in;
+  filter: drop-shadow(0 18px 30px rgba(70, 48, 40, .32));
+}
+.explore-cover.opening { transform: rotateY(-155deg); opacity: .15; }
+.explore-cover img { width: 100%; height: 100%; display: block; }
+.explore-cover-title {
+  position: absolute;
+  left: 23%;
+  right: 23%;
+  top: 19%;
+  bottom: 19%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2em;
+  color: #6c5560;
+  text-align: center;
+}
+.explore-cover-title b { font-weight: 400; font-size: min(7.5vh, 13vw); letter-spacing: .25em; padding-left: .25em; writing-mode: vertical-rl; }
+.explore-cover-title span { font-size: min(2vh, 3.6vw); letter-spacing: .3em; color: #8a7079; }
+.explore-map-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  animation: explore-map-in .7s ease-out both;
+}
+@keyframes explore-map-in { from { opacity: 0; } to { opacity: 1; } }
+.explore-dedication {
+  position: absolute;
+  z-index: 2;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  margin: 0;
+  padding: 12px 6px;
+  border-radius: 999px;
+  background: rgba(255, 249, 243, .78);
+  box-shadow: 0 4px 14px rgba(87, 63, 72, .1);
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  letter-spacing: .32em;
+  color: rgba(110, 82, 92, .82);
+  pointer-events: none;
+  animation: explore-map-in 1.6s ease-out both;
+}
+@media (max-width: 700px) { .explore-dedication { right: 10px; bottom: calc(76px + env(safe-area-inset-bottom)); font-size: 10px; } }
+/* Over the map the title needs a ground of its own. */
+.explore-book.is-open .explore-title { flex: 0 1 auto; margin: 0 auto; padding: 5px 16px; border-radius: 16px; background: rgba(255, 249, 243, .88); box-shadow: 0 6px 18px rgba(87, 63, 72, .1); }
+.explore-map { position: relative; height: 100%; max-width: none; margin: 0 auto; }
+.explore-map img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; }
+.explore-map-tag {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 6px 14px 7px;
+  border: 1px solid rgba(166, 110, 133, .35);
+  border-radius: 999px;
+  background: rgba(255, 249, 243, .94);
+  color: #6f4b5a;
+  font: inherit;
+  font-size: 15px;
+  letter-spacing: .15em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(87, 63, 72, .2);
+}
+.explore-map-tag.been::after { content: ' ·'; color: #c47f93; }
+/* Newly opened: a little light beside it until they've been. */
+.explore-map-tag.fresh { box-shadow: 0 0 0 4px rgba(244, 214, 150, .55), 0 6px 18px rgba(87, 63, 72, .18); animation: explore-fresh 2.2s ease-in-out infinite; }
+@keyframes explore-fresh { 50% { box-shadow: 0 0 0 9px rgba(244, 214, 150, .12), 0 6px 18px rgba(87, 63, 72, .18); } }
+@media (prefers-reduced-motion: reduce) { .explore-map-tag.fresh { animation: none; } }
+.explore-map-tag.home { background: rgba(122, 82, 98, .9); color: #fff6f0; border-color: transparent; }
+.explore-diary {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(60, 40, 46, .28);
+}
+.explore-diary section {
+  width: min(560px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 18px 20px 22px;
+  border-radius: 18px;
+  background: #fbf6ef;
+  box-shadow: 0 20px 50px rgba(60, 40, 46, .3);
+}
+.explore-diary header { display: flex; align-items: baseline; justify-content: space-between; }
+.explore-diary h2 { margin: 0 0 12px; font-weight: 400; font-size: 18px; letter-spacing: .2em; }
+.explore-diary header button { border: 0; background: none; color: #8a6d78; font: inherit; cursor: pointer; }
+.explore-diary ol { margin: 0; padding: 0; list-style: none; }
+.explore-diary li { padding: 10px 0; border-top: 1px dashed rgba(166, 110, 133, .3); font-size: 14px; line-height: 1.8; }
+.explore-diary li span { display: block; font-size: 12px; color: #a08b90; letter-spacing: .08em; }
+.explore-diary .empty { color: #a08b90; font-size: 14px; }
+.explore-diary ol.now li { border-top: 0; color: #7a5262; }
+.explore-diary ol.now li span { color: #c47f93; }

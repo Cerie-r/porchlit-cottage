@@ -1,0 +1,11 @@
+import React,{createContext,useContext,useEffect,useState} from 'react';
+import * as THREE from 'three';
+import {useThree} from '@react-three/fiber';
+export const TvPictureContext=createContext('window');
+export function TvScreen({on}){const source=useContext(TvPictureContext),[texture,setTexture]=useState(null),{invalidate}=useThree();
+ useEffect(()=>{const canvas=document.createElement('canvas');canvas.width=960;canvas.height=512;const c=canvas.getContext('2d');const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;let active=true;
+ const draw=()=>{c.fillStyle='#e9e2db';c.fillRect(0,0,960,512);if(source==='flowers'){c.strokeStyle='#b798a0';c.lineWidth=3;for(let i=0;i<7;i++){const x=210+i*88,y=150+(i%3)*60;c.beginPath();c.moveTo(480,450);c.quadraticCurveTo(x+30,300,x,y);c.stroke();for(let j=0;j<5;j++){c.fillStyle=j%2?'#e3c3c7':'#d5aeb6';c.beginPath();c.ellipse(x+Math.cos(j*1.257)*18,y+Math.sin(j*1.257)*18,23,15,j,0,7);c.fill();}}}else{const g=c.createLinearGradient(0,0,0,512);g.addColorStop(0,'#b8ccd9');g.addColorStop(1,'#f3dfd3');c.fillStyle=g;c.fillRect(0,0,960,512);c.fillStyle='#fff3db';c.beginPath();c.arc(700,145,50,0,7);c.fill();c.fillStyle='#b8c4c8';c.beginPath();c.moveTo(0,400);c.bezierCurveTo(260,210,410,500,960,280);c.lineTo(960,512);c.lineTo(0,512);c.fill();c.fillStyle='#f4e8dc';c.fillRect(475,0,10,512);c.fillRect(0,250,960,8);}c.fillStyle='#796c69';c.font='18px Georgia';c.fillText('PORCHLIT  /  a quiet moment',35,477);map.needsUpdate=true;setTexture(map);invalidate();};draw();
+ if(source?.startsWith('data:image/')){const img=new Image();img.onload=()=>{if(!active)return;c.fillStyle='#f3ede4';c.fillRect(0,0,960,512);const scale=Math.min(960/img.width,512/img.height),w=img.width*scale,h=img.height*scale;c.drawImage(img,(960-w)/2,(512-h)/2,w,h);map.needsUpdate=true;invalidate();};img.src=source;}
+ return()=>{active=false;map.dispose();};},[source,invalidate]);
+ return <group userData={{tintExclude:true}}><mesh position={[0,.93,.062]}><planeGeometry args={[1.53,.82]}/>{on?<meshBasicMaterial map={texture} color="#ffffff" toneMapped={false}/>:<meshStandardMaterial color="#292832" roughness={.3}/>}</mesh><mesh position={[.69,.495,.06]}><sphereGeometry args={[.012,8,6]}/><meshBasicMaterial color={on?'#dce8d6':'#b99798'}/></mesh></group>;
+}

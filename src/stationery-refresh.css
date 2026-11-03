@@ -1,0 +1,19 @@
+/* Offline-painted pen-and-wash assets; no live filters or drawing loops. */
+.sticky-note,.sticky-note:nth-child(even),.desktop-sticky-previews button,.desktop-sticky-previews button:nth-child(2){background:#fcf8f0 url('/art/stationery/paper.webp');color:#705e59}
+.sticky-note{border:1px solid #d9ccc077;border-radius:2px 3px 15px 2px;box-shadow:1px 3px 3px #7460540a,3px 12px 22px #74605412}
+.sticky-note .note-sprig{object-fit:contain;opacity:.85;width:85px;height:45px;right:7px;top:5px;bottom:auto;pointer-events:none}
+.sticky-note textarea{position:relative;z-index:1;background:transparent;font-family:Georgia,'Songti SC',serif;color:#675952}
+.sticky-note .note-tape{background:repeating-linear-gradient(45deg,#eadbd4a6 0 7px,#f9f3e69c 7px 9px);box-shadow:none;border-left:1px dashed #cfbbb080;border-right:1px dashed #cfbbb080}
+.desktop-sticky-previews button{background-image:url('/art/stationery/pressed-flower.png'),url('/art/stationery/paper.webp');background-size:70px auto,256px;background-repeat:no-repeat,repeat;background-position:right bottom,center;padding-right:52px}
+.letter-stationery{background:#fcf8f0 url('/art/stationery/paper.webp')}
+.letter-stationery:before{display:none}
+.stationery-flower{object-fit:contain;opacity:.65}
+.stationery-border{border-color:#bfaca445}
+.letter-postmark{object-fit:contain;opacity:.8}
+.sealed-envelope>.letter-postmark{opacity:.72}
+.envelope-postage{background:#fcf8f0;border:2px dashed #d4c2b1;padding:2px;width:49px;box-shadow:1px 2px 3px #705c4215}
+.envelope-postage img{display:block;width:100%;height:auto}
+.tarot-table{background:#f8f3eb url('/art/stationery/paper.webp')}
+.tarot-card svg,.tarot-deck svg,.tarot-fan svg{border-radius:8px}
+.tarot-catalogue{margin:25px 0;text-align:center}.tarot-catalogue>p{font-size:12px;color:#998680}.tarot-catalogue-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:20px 14px;margin-top:20px}.tarot-catalogue-grid figure{margin:0}.tarot-catalogue-grid svg{display:block;width:100%;border-radius:6px}.tarot-catalogue-grid figcaption{font:12px/2 serif;margin-top:5px}
+@media(max-width:600px){.envelope-postage{width:36px}.sticky-note .note-sprig{width:85px}}

@@ -1,0 +1,102 @@
+/* The backpack's three pages (backpack.jsx). */
+.backpack .craft-panel{max-width:1000px}
+
+/* The tickets, at the top of every page. */
+.bag-tickets{margin:0 0 14px;border:1px solid #e9d7dc;border-radius:18px;background:linear-gradient(180deg,#fffaf6,#fbf0ec);box-shadow:0 6px 20px #6f4f5a0d}
+.craft-panel .bag-tickets .bag-ticket-row{width:100%;display:flex;align-items:center;gap:12px;padding:10px 16px;border:0;background:transparent;border-radius:18px;text-align:left}
+.bag-ticket-mark{width:42px;height:29px;flex:none}
+.bag-ticket-mark path:first-child{fill:#f6dfe4;stroke:#c48da0;stroke-width:1.2}
+.bag-ticket-mark .perforation{fill:none;stroke:#c48da0;stroke-width:1.1;stroke-dasharray:2 2.2}
+.bag-ticket-mark .star{fill:#dcae66}
+.bag-ticket-row strong{font-size:23px;font-weight:500;color:#9a5470;white-space:nowrap;line-height:1}
+.craft-panel .bag-ticket-row strong small{font-size:12px;letter-spacing:0;color:#9b8590}
+.bag-ticket-row span{flex:1;min-width:0;font-size:12px;color:#9b8590;line-height:1.6}
+.bag-ticket-row .ui-icon{flex:none;width:16px;height:16px;color:#b39aa4}
+.bag-ticket-log{list-style:none;margin:0;padding:0 16px 12px 70px;display:grid;gap:5px}
+.bag-ticket-log li{display:flex;gap:10px;font-size:12.5px;color:#7a6570}
+.bag-ticket-log li span{min-width:64px;color:#a9949d}
+.bag-ticket-log li b{margin-left:auto;font-weight:500;color:#9a5470}
+.bag-ticket-empty{margin:0;padding:0 16px 12px 70px;font-size:12.5px;color:#9b8590}
+
+/* The three pages' tabs. */
+.bag-tabs{display:flex;gap:4px;margin:0 0 18px;padding:4px;border-radius:16px;background:#efe3dd;width:max-content;max-width:100%}
+.craft-panel .bag-tabs button{border:0;background:transparent;border-radius:12px;padding:8px 22px;color:#86717b}
+.craft-panel .bag-tabs button.chosen{background:#fffaf6;color:#6d5160;box-shadow:0 2px 8px #6f4f5a17}
+.craft-panel .bag-tabs small{margin-left:6px;font-size:11px;letter-spacing:0;color:#b0979f}
+
+/* 图鉴 */
+.bag-album{display:grid;gap:22px}
+.bag-shelf h3{display:flex;align-items:baseline;gap:10px;margin:0 0 10px;font-size:15px;font-weight:500;color:#6d5a63}
+.craft-panel .bag-shelf h3 small{font-size:12px;letter-spacing:0;color:#a9949d}
+.bag-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.bag-tile{margin:0;display:grid;gap:6px;justify-items:center;align-content:start;padding:10px 6px;border:1px dashed #e0cdd4;border-radius:16px;background:#fbf6f2;text-align:center}
+.bag-tile.have{border-style:solid;border-color:#ecdbe0;background:#fffaf6;box-shadow:0 4px 14px #6f4f5a0a}
+.bag-tile-picture{width:76px;height:76px;display:grid;place-items:center}
+.bag-tile-picture img{width:76px;height:76px;object-fit:contain}
+.bag-tile-picture .drawing{width:46px;height:46px;border-radius:50%;background:#f3e6e2;animation:bag-breathe 1.1s ease-in-out infinite alternate}
+@keyframes bag-breathe{to{opacity:.45}}
+.bag-tile figcaption{display:grid;gap:2px}
+.bag-tile strong{font-size:13px;font-weight:500;color:#6d5a63}
+.craft-panel .bag-tile small{font-size:11px;letter-spacing:0;color:#a9949d}
+.bag-album-empty{margin:0;padding:22px 18px;border:1px dashed #e0cdd4;border-radius:16px;background:#fbf6f2;text-align:center;font-size:13px;line-height:1.8;color:#9b8590}
+.bag-album-note{margin:0;text-align:center;font-size:12px;color:#b09aa3}
+.bag-album-studio{position:fixed;left:0;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none}
+
+/* 日记: lined pages, two side by side on a wide screen. */
+.bag-diary{outline:none}
+.bag-diary-lead{margin:0 0 12px;font-size:14px;color:#8f7e83}
+.bag-diary-stats{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.bag-diary-stats p{margin:0;display:grid;gap:2px;min-width:96px;padding:10px 16px;border-radius:14px;background:#f4d6de59;text-align:center}
+.bag-diary-stats strong{font-size:18px;font-weight:500;color:#a2566f;white-space:nowrap}
+.bag-diary-stats span{font-size:11.5px;color:#9a878c}
+.bag-diary-spread{display:grid;touch-action:pan-y}
+.bag-diary-spread.wide{grid-template-columns:1fr 1fr}
+.bag-diary-day{position:relative;min-height:320px;padding:22px 28px 40px;border:1px solid #eadcd3;border-radius:6px 18px 18px 6px;background:linear-gradient(180deg,#fffdf8 0 58px,transparent 58px) no-repeat,repeating-linear-gradient(180deg,transparent 0 33px,#f1e5de 33px 34px) 0 58px,#fffdf8;box-shadow:0 10px 28px #6f4f5a12}
+/* The rules start under the date: the first line of writing sits on the first rule. */
+.bag-diary-spread.wide .bag-diary-day:first-child{border-radius:18px 4px 4px 18px;box-shadow:inset -16px 0 18px -16px #6f4f5a30,0 10px 28px #6f4f5a12}
+.bag-diary-spread.wide .bag-diary-day:last-child{border-left:0;border-radius:4px 18px 18px 4px;box-shadow:inset 16px 0 18px -16px #6f4f5a30,0 10px 28px #6f4f5a12}
+.bag-diary-day h3{margin:0 0 6px;height:30px;font:500 16px/30px serif;letter-spacing:.04em;color:#7a5d6a}
+.bag-diary-day ul{list-style:none;margin:0;padding:0}
+.bag-diary-day li{position:relative;padding:0 0 0 18px;font-size:14px;line-height:34px;color:#5f5056}
+.bag-diary-day li::before{content:'';position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:#d9a9b9}
+.bag-diary-day li.made::before{background:#a3b89d}
+.bag-diary-day li.meal::before{background:#dcb56f}
+.bag-diary-day li.learn::before{background:#bba6d6}
+.bag-diary-day li.puzzle::before{background:#bd9a86}
+.bag-diary-day li.gift::before{background:#c98aa5}
+.bag-diary-day li.plaza::before{background:#e3a3bc}
+.bag-diary-day li.outing::before{background:#8fb0c4}
+.craft-panel .bag-diary-day small{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:11px;letter-spacing:0;color:#bba7ae}
+.bag-diary-day.blank{background:#fcf8f3}
+.bag-diary-day.empty p{margin:0;font-size:14px;line-height:34px;color:#9b8a8f}
+.bag-diary-turn{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
+.bag-diary-turn span{font-size:12px;color:#a9949d}
+
+@media(max-width:650px){
+  .craft-panel .bag-tickets .bag-ticket-row{padding:9px 12px;gap:10px}
+  .bag-ticket-row span{font-size:11px}
+  .bag-ticket-log,.bag-ticket-empty{padding-left:16px}
+  .bag-tabs{width:100%}
+  .craft-panel .bag-tabs button{flex:1;padding:8px 0}
+  .bag-tiles{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px}
+  .bag-tile{padding:8px 4px;border-radius:14px}
+  .bag-tile-picture,.bag-tile-picture img{width:58px;height:58px}
+  .bag-tile-picture .drawing{width:40px;height:40px}
+  .bag-tile strong{font-size:12.5px}
+  .craft-panel .bag-tile small{font-size:10.5px}
+  .bag-diary-day{min-height:280px;padding:22px 20px 38px}
+}
+/* A thing that came to the door: who left it, when, and their note. */
+.bag-gift-tag{margin:-4px 0 12px;padding:10px 14px;border-radius:14px;background:#fbf1ee}
+.bag-gift-tag p{margin:0;font-size:12.5px;color:#9a6f80}
+.bag-gift-tag blockquote{margin:6px 0 0;font-size:13.5px;line-height:1.7;color:#5f5056;white-space:pre-wrap;overflow-wrap:anywhere}
+/* A drift bottle (src/bottles.js): reporting it is a quiet line under the rest; asked about, the door's report form. */
+.bag-detail .bag-quiet{display:block;margin-top:10px;border:0;background:none;padding:4px 0;font-size:12px;color:#a28c98;text-decoration:underline;text-underline-offset:3px}
+.bag-detail .door-report-ask{margin-top:12px}
+.bag-detail .bag-error{color:#a0564f;font-size:12px}
+/* Throwing a thing away: asked once, quietly, under the rest. */
+.bag-detail .bag-drop-ask{margin-top:12px;padding:10px 14px;border-radius:14px;background:#fbf1ee}
+.bag-detail .bag-drop-ask p{margin:0 0 8px;font-size:12.5px;color:#7d5a68}
+.bag-detail .bag-drop-ask div{display:flex;gap:8px;flex-wrap:wrap}
+.bag-detail .bag-drop-ask .bag-drop-yes{background:#a0564f;color:#fff;border-color:#a0564f}
+.bag-model .bag-bottle{display:block;width:100%;height:100%;object-fit:contain;padding:28px;box-sizing:border-box}

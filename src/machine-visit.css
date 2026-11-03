@@ -1,0 +1,85 @@
+/* The card an AI living here leaves when it has been (src/machine-visit.jsx): a little note on the page, in the
+   porch card's paper, low in the middle so the house stays in view above it. */
+.machine-visit {
+  position: absolute;
+  z-index: 44;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(372px, calc(100% - 28px));
+  max-height: min(64vh, 540px);
+  max-height: min(64dvh, 540px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,243,228,.97), rgba(255,249,245,.95) 46%);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 70px rgba(87,63,72,.22);
+  color: #6f5b5f;
+  animation: machine-visit-in .42s ease-out;
+  outline: none;
+}
+@keyframes machine-visit-in { from { opacity: 0; transform: translate(-50%, 10px); } }
+.machine-visit-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-y; padding: 22px 24px 4px; }
+.machine-visit footer { flex: none; padding: 10px 24px 16px; border-top: 1px solid rgba(166,110,133,.12); }
+.machine-visit-eyebrow { margin: 0 0 6px; color: var(--rose); font-size: 9px; letter-spacing: .24em; text-transform: uppercase; }
+.machine-visit h2 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 12px; font-size: 21px; font-weight: 400; letter-spacing: .02em; color: #5f4a52; }
+/* What she calls the AI here: chips under the title, asked the first time, then behind a small 改叫法. */
+.machine-call { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -4px 0 12px; padding: 10px 12px; border-radius: 14px; background: rgba(239,215,220,.38); font-size: 12px; color: #8a6d78; }
+.machine-call > span { flex-basis: 100%; margin-bottom: 2px; }
+.machine-call button, .machine-call-again { padding: 4px 11px; border: 1px solid #e3cfc8; border-radius: 999px; background: #fff8f2; color: #8a5f6e; font-size: 12px; }
+.machine-call button[aria-pressed='true'] { background: #ead6da; border-color: #d9b8c2; color: #6f4a5a; }
+.machine-call form { display: flex; gap: 6px; }
+.machine-call input { width: 7.5em; padding: 4px 9px; border: 1px solid #e3cfc8; border-radius: 999px; background: #fffaf6; color: #6f5b5f; font: inherit; font-size: 12px; }
+.machine-visit h2 .machine-call-again { padding: 2px 6px; font-size: 11px; letter-spacing: .04em; color: #a08b90; background: transparent; border-color: transparent; }
+.machine-visit h2 .machine-call-again:hover { color: #8a5f6e; }
+.machine-visit h3 { margin: 16px 0 8px; padding-top: 12px; border-top: 1px dashed rgba(166,110,133,.28); font-size: 13px; font-weight: 400; color: #8a6d78; }
+.machine-visit ul { list-style: none; margin: 0; padding: 0; }
+.machine-did li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 7px 0; font-size: 14px; line-height: 1.55; }
+.machine-did li::before { content: ''; flex: none; width: 5px; height: 5px; margin: 0 2px 2px 0; border-radius: 50%; background: #d7a9b7; align-self: center; }
+/* A long line wraps beside its dot instead of dropping below it. */
+.machine-did li > span { flex: 1 1 0; min-width: 0; }
+.machine-did q { flex-basis: 100%; padding-left: 13px; color: #9a7f87; font-size: 13px; quotes: '「' '」'; }
+.machine-visit button { font: inherit; cursor: pointer; }
+.machine-did button, .machine-hidden button {
+  padding: 5px 12px;
+  border: 1px solid #e3cfc8;
+  border-radius: 999px;
+  background: #fff8f2;
+  color: #8a5f6e;
+  font-size: 12px;
+}
+.machine-did button:hover, .machine-hidden button:hover { background: #f6e6e4; }
+.machine-hidden { padding: 8px 0 10px; }
+.machine-hidden p { margin: 0 0 6px; font-size: 14px; }
+.machine-hidden small { color: #a08b90; font-size: 12px; }
+.machine-hints { margin: 0 0 8px; padding: 0 0 0 1.4em; color: #7c6268; font-size: 13px; line-height: 1.7; }
+.machine-hints li { padding-left: 2px; }
+.machine-visit-close {
+  display: block;
+  margin: 0 0 0 auto;
+  padding: 9px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #ead6da;
+  color: #6f5160;
+  font-size: 13px;
+}
+.machine-visit-close:hover { background: #e2c8ce; }
+.is-night .machine-visit { box-shadow: 0 22px 70px rgba(10,8,20,.4); }
+
+/* The little tag among the house's buttons while something hidden waits to be found. */
+.house-actions .hidden-tag { display: flex; align-items: center; gap: 5px; color: #8a5f6e; background: #fff3ef; }
+.house-actions .hidden-tag svg { width: 18px; height: 18px; flex: none; }
+.house-actions .hidden-tag b { font-weight: 500; font-size: 12px; min-width: 16px; padding: 1px 5px; border-radius: 999px; background: #efd7dc; color: #7a4f60; }
+@media (max-width: 700px) {
+  .machine-visit { bottom: calc(18px + env(safe-area-inset-bottom)); border-radius: 20px; }
+  .machine-visit-body { padding: 18px 18px 4px; }
+  .machine-visit footer { padding: 8px 18px 12px; }
+  .machine-visit h2 { font-size: 19px; }
+  .house-actions .hidden-tag-label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .machine-visit { animation: none; } }

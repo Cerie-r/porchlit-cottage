@@ -1,0 +1,29 @@
+{
+  "name": "porchlit-3d-prototype",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:model": "node scripts/build-house-model.mjs && node scripts/build-castle-model.mjs && node scripts/build-castle-model.mjs rose && node scripts/build-haunted-model.mjs",
+    "build": "npm run build:model && node scripts/build-outfits.mjs && node scripts/ours-fit.mjs && vite build && node scripts/check-ours.mjs",
+    "start": "node server/index.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "heroku-postbuild": "npm run build",
+    "wardrobe:pictures": "node scripts/wardrobe-pictures.mjs"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.4.0",
+    "pg": "^8.23.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.181.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.10"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

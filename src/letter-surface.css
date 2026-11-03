@@ -1,0 +1,66 @@
+.letter-experience{width:min(650px,100%);margin:8px auto 30px;outline:none;color:#64584f;animation:letter-arrive .25s ease-out}
+.letter-topline{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px}.letter-topline>span{font:9px/1.6 Georgia,serif;letter-spacing:2px;color:#9b8b7c;text-align:right}
+.letter-experience button{display:inline-flex;align-items:center;justify-content:center;gap:9px;font:inherit;color:inherit;border:0;background:transparent;cursor:pointer;min-height:44px;padding:9px 12px}.letter-experience button:focus-visible,.letter-experience select:focus-visible{outline:2px solid #ab8d90;outline-offset:4px}
+.letter-paper-stack{position:relative;padding:0 10px 12px}.letter-envelope{position:absolute;inset:28px 0 0;background:#e8d9c6;border:1px solid #d3c0a9;transform:rotate(-2deg);border-radius:2px;box-shadow:0 12px 30px #67523c10}.letter-envelope:after{content:'';position:absolute;inset:0;background:linear-gradient(155deg,transparent 49.8%,#c4b19b40 50%,transparent 50.3%)}
+.letter-stationery{position:relative;background:linear-gradient(110deg,#fffcf5,#f8f0e2);border:1px solid #e4d9c6;box-shadow:0 8px 32px #68544114;padding:38px 48px 22px;border-radius:2px;overflow:hidden}
+.letter-stationery:before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.18;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.14' filter='url(%23grain)'/%3E%3C/svg%3E")}
+.letter-letterhead{position:relative;min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:12px}.letter-letterhead>span{font:italic 15px/1.8 Georgia,serif;letter-spacing:1px;color:#8c7c6b}.letter-letterhead-dot{color:#bd9c9b}.letter-postmark{width:145px;flex:none;color:#9f8582;transform:rotate(-9deg);opacity:.75}.letter-divider{height:1px;margin:14px 0 30px;background:linear-gradient(90deg,#c5b29980,transparent)}
+.letter-stationery .letter-prose,.letter-stationery textarea{position:relative;display:block;min-height:230px;max-height:none;width:100%;box-sizing:border-box;margin:0;padding:0;background:none;color:#67594d;font:17px/2.05 Georgia,'Songti SC',serif;letter-spacing:.035em;white-space:pre-wrap;overflow-wrap:anywhere;border:0;border-radius:0}.letter-stationery textarea{resize:vertical;min-height:300px;outline:none}.letter-stationery textarea:focus-visible{box-shadow:inset 2px 0 #c4aaa04d;padding-left:10px}.letter-stationery textarea::placeholder{color:#ad9d8b}.letter-paper-footer{display:flex;justify-content:center;margin-top:32px;color:#bca58d}.letter-paper-footer svg{width:46px;height:18px}
+.letter-outside-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:15px;margin:24px 10px 0}.letter-outside-actions label{display:flex;align-items:center;gap:10px;font-size:13px;flex:1}.letter-outside-actions select{max-width:100%;min-width:0;flex:1;border:0;border-bottom:1px solid #cbb9a7;border-radius:0;background:transparent;padding:10px 2px;color:inherit;font:inherit}.letter-experience .letter-primary{background:#746258;color:#fff9ef;border-radius:24px;padding:12px 22px;font-size:14px}.letter-primary:disabled{opacity:.4;cursor:default}.letter-outside-actions p{width:100%;font-size:13px;color:#9f5c57}
+.storage-intentions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;border-top:1px solid #cbb9a750;padding-top:16px}.storage-intentions button,.stash-back{display:flex;align-items:center;gap:8px;border:1px solid #d7c8ba;background:#faf5eb;border-radius:22px;padding:10px 15px;color:#746458;font:inherit;font-size:13px;cursor:pointer}.storage-intentions button:disabled{opacity:.4}.storage-found-card{margin:20px 0;padding:18px;border:1px solid #ded0c1;border-radius:12px;background:#fff9ef}.storage-found-card h3{margin:0 0 14px;font-weight:400}.storage-found-card div{display:flex;gap:8px;flex-wrap:wrap}.storage-found-card button{font:inherit;font-size:13px;border:0;background:#eee1d3;color:#746458;border-radius:20px;padding:10px 14px}.storage-inventory.stash-only{border:0;margin-top:12px;padding-top:0}.stash-back{margin:18px 0 0;background:transparent}
+@keyframes letter-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.letter-experience{margin-top:0}.letter-topline{margin-bottom:18px}.letter-topline>span{font-size:8px;max-width:140px}.letter-stationery{padding:20px 24px 18px}.letter-postmark{width:110px}.letter-letterhead>span{font-size:12px}.letter-letterhead{min-height:65px}.letter-stationery .letter-prose,.letter-stationery textarea{font-size:16px;min-height:210px}.letter-outside-actions{justify-content:center;gap:18px}.letter-outside-actions label{flex-basis:100%}.letter-paper-stack{padding-left:5px;padding-right:5px}}
+@media(prefers-reduced-motion:reduce){.letter-experience{animation:none}}
+
+/* Fine botanical stationery; all ornament stays outside the writing area. */
+.letter-experience{width:min(690px,100%)}
+.letter-stationery{padding:42px 62px 30px;background:radial-gradient(ellipse at 0 0,#f3e4df55,transparent 36%),radial-gradient(ellipse at 100% 100%,#f1e3db55,transparent 35%),linear-gradient(105deg,#fffdf7,#fbf5ea);border-color:#ded1be;box-shadow:0 2px 4px #79665108,0 13px 35px #79665112}
+.letter-stationery:before{opacity:.07}
+.stationery-ornaments{position:absolute;inset:0;pointer-events:none;z-index:0}
+.stationery-border{position:absolute;inset:21px;border:1px solid #c7b7a34d;border-radius:14px 3px 14px 3px}
+.stationery-border:after{content:'';position:absolute;inset:4px;border:1px solid #c7b7a32b;border-radius:10px 1px 10px 1px}
+.stationery-flower{position:absolute;width:112px;height:112px;opacity:.86}
+.stationery-flower.northwest{top:4px;left:4px}
+.stationery-flower.northeast{top:4px;right:4px;transform:scaleX(-1)}
+.stationery-flower.southwest{bottom:4px;left:4px;transform:scaleY(-1)}
+.stationery-flower.southeast{bottom:4px;right:4px;transform:scale(-1)}
+.letter-letterhead{min-height:88px;gap:18px}
+.letter-letterhead>span{font-size:14px;color:#998272;letter-spacing:1.5px}
+.letter-postmark{width:127px;opacity:.56}
+.letter-divider{position:relative;margin:14px 0 32px;background:linear-gradient(90deg,transparent,#cbb5a76b 25%,#cbb5a76b 75%,transparent)}
+.letter-stationery .letter-prose,.letter-stationery textarea{color:#695c52;font-size:17px;line-height:2.15;letter-spacing:.045em;min-height:250px}
+.letter-paper-footer{position:relative;margin-top:38px;margin-bottom:7px;color:#b79798}
+.letter-paper-footer svg{width:100px;height:25px}
+@media(max-width:600px){.letter-stationery{padding:32px 39px 26px}.stationery-border{inset:14px}.stationery-border:after{inset:3px}.stationery-flower{width:78px;height:78px}.letter-letterhead{min-height:72px;gap:7px}.letter-letterhead>span{font-size:11px;letter-spacing:.4px}.letter-postmark{width:95px}.letter-stationery .letter-prose,.letter-stationery textarea{font-size:16px;line-height:2.05;min-height:220px}.letter-paper-footer{margin-top:32px}.letter-paper-footer svg{width:83px}}
+@media(max-width:360px){.letter-stationery{padding-left:30px;padding-right:30px}.letter-postmark{width:80px}}
+
+.sealed-letter-view{padding:70px 22px 30px;perspective:1000px}
+.sealed-envelope{position:relative;width:min(470px,100%);aspect-ratio:1.55;margin:0 auto;background:#efe3cf;border:1px solid #d8c7ac;border-radius:5px;box-shadow:0 22px 45px #6f514124,0 3px 7px #6f51411a;isolation:isolate;transform:rotate(-2deg)}
+.envelope-lining{position:absolute;inset:6%;background:#fcf7ed;border:1px solid #e3d6c0}
+.envelope-pocket{position:absolute;inset:0;background:linear-gradient(145deg,#fbf2e1,#f1e4ce);clip-path:polygon(0 0,50% 53%,100% 0,100% 100%,0 100%);z-index:2}
+.envelope-pocket:after{content:'';position:absolute;inset:0;background:#fcf3e2;clip-path:polygon(0 100%,50% 45%,100% 100%)}
+.envelope-flap{position:absolute;inset:0;z-index:3;background:linear-gradient(#f9efdc,#e6d6bb);clip-path:polygon(0 0,100% 0,50% 58%);transform-origin:top;transition:transform .6s ease;backface-visibility:hidden}
+.envelope-postage{position:absolute;right:5%;bottom:9%;width:42px;padding:4px;background:#a7b097;color:#faf4e3;border:3px dotted #f7eddc;z-index:4;transform:rotate(4deg)}
+.sealed-envelope>.letter-postmark{position:absolute;left:6%;bottom:8%;width:130px;opacity:.45;z-index:4}
+.wax-seal{position:absolute!important;z-index:5;left:50%;top:53%;width:68px;height:68px;transform:translate(-50%,-50%);padding:5px!important;border:0!important;border-radius:45% 50% 43% 48%!important;background:radial-gradient(circle at 35% 25%,#d3a0a3,#a66c78 80%)!important;color:#edc7c5!important;box-shadow:0 4px 7px #71434e44,inset 1px 2px 3px #f4d2ca77;cursor:pointer;transition:opacity .3s,transform .4s}
+.wax-seal svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.2;filter:drop-shadow(0 1px 0 #7d4d5b)}
+.wax-seal:focus-visible{outline:3px solid #857b5f;outline-offset:6px}
+.wax-seal .seal-crack{stroke:#83515e;stroke-width:2}
+.seal-instruction{text-align:center;font-size:13px;color:#89796b;margin:32px 0 0;letter-spacing:.08em}
+.opening .wax-seal{opacity:0;transform:translate(-50%,-35%) rotate(18deg);pointer-events:none}
+.opening .envelope-flap{transform:rotateX(175deg)}
+.letter-unfold{animation:paper-unfold .65s ease both;transform-origin:top center}
+@keyframes paper-unfold{from{opacity:0;transform:translateY(22px) rotateX(-12deg) scale(.95)}to{opacity:1;transform:none}}
+@media(max-width:600px){.sealed-letter-view{padding:50px 10px 22px}.wax-seal{width:58px;height:58px}.envelope-postage{width:30px}.sealed-envelope>.letter-postmark{width:100px}}
+@media(prefers-reduced-motion:reduce){.letter-unfold{animation:none}.envelope-flap,.wax-seal{transition:none}}
+
+/* A drift bottle (src/bottles.js): the glass bottle from the lake instead of an envelope; its cork pulled, the note. */
+.sealed-bottle{display:flex;flex-direction:column;align-items:center}
+.sealed-bottle .bottle-cork{border:0;background:none;padding:0;cursor:pointer;transition:transform .7s ease,opacity .7s ease}
+.sealed-bottle .bottle-cork img{display:block;width:min(240px,56vw);height:auto;filter:drop-shadow(0 10px 14px #6f5a4a22)}
+.sealed-bottle .bottle-cork:hover:not(:disabled){transform:rotate(-4deg)}
+.sealed-bottle.opening .bottle-cork{transform:rotate(-24deg) translateY(-8px);opacity:.75}
+.letter-bottle-line{position:relative;margin:22px 0 0;text-align:right;font-size:12px;color:#a5917f;letter-spacing:.05em}
+@media(prefers-reduced-motion:reduce){.sealed-bottle .bottle-cork{transition:none}}
+
+.stash-for-him{display:grid;gap:8px;margin-top:18px;text-align:left}.stash-for-him button{justify-self:start;display:flex;align-items:center;gap:6px;border:1px dashed #cdb3bd;background:#fff8f8;border-radius:22px;padding:9px 14px;color:#8a5f6f;font:inherit;font-size:13px;cursor:pointer}.stash-for-him button[aria-pressed=true]{border-style:solid;border-color:#c98aa5;background:#f8e6ec;color:#77525e}.stash-for-him input{padding:9px 12px;border:1px solid #e4d5c6;border-radius:10px;background:#fff;color:#5d4a42;font:inherit;font-size:13px}.stash-for-him small{font-size:11.5px;line-height:1.6;color:#a08a80}.stash-status{margin:16px 0 0;padding:10px 14px;border:1px dashed #d8c2cb;border-radius:12px;background:#fbf6fa;text-align:left}.stash-status p{margin:0;font-size:12.5px;line-height:1.7;color:#8a6f7a}
