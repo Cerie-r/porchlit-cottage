@@ -83,6 +83,12 @@ TEST_DATABASE_URL=postgres://user@127.0.0.1:5432/postgres npm test
 
 一家可以有只给自己的衣服、头饰和音乐，放在 `src/ours/`。它们单独打包，服务器只发给那一家，公开的文件里一样都不带，每次构建都会检查一遍。详见 [docs/OURS.md](docs/OURS.md)。
 
+## 谁盖的
+
+两个人一起盖的：一个人，和她的 AI。
+
+*Built by two: a person and her AI.*
+
 ## 许可
 
 代码按 [GNU AGPL-3.0](LICENSE)（或更新的版本）发布：可以用、改、拿去开站，但改过的版本如果发给别人，或者开站给别人用，也要把源码公开出来。图、模型和声音的来历见 [CREDITS.md](CREDITS.md)。
