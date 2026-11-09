@@ -2,8 +2,8 @@ import React,{createContext,useContext,useEffect,useMemo,useRef,useState} from '
 import {useFrame,useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import {DessertModel,DessertPortion,BITTEN_KINDS,SidePlate,DessertFork} from './dessert-model.jsx';
-import {normalizeDessert,makerLabel,dayLabel} from './dessert-recipe.js';
-import {DishModel,DishPortion,Chopsticks} from './cooking-tools.jsx';
+import {normalizeDessert,makerLabel,dayLabel,tagNote} from './dessert-recipe.js';
+import {ServedDish,ServedPortion,DishUtensil} from './cooking-pot-food.jsx';
 import {normalizeDish} from './cooking-recipe.js';
 import {play} from './sounds.js';
 import './dessert.css';
@@ -125,13 +125,13 @@ export function DessertDome() {
   return <group position={DOME_SPOT} onClick={tap} onPointerOver={() => {if (item && !ctx.decorMode) document.body.style.cursor = 'pointer';}} onPointerOut={() => {document.body.style.cursor = 'default';}}>
     <mesh material={tray} position={[0, .006, 0]} castShadow receiveShadow><cylinderGeometry args={[.15, .155, .012, 40]}/></mesh>
     <mesh material={gold} position={[0, .012, 0]} rotation={[-Math.PI / 2, 0, 0]}><torusGeometry args={[.15, .003, 6, 48]}/></mesh>
-    {d && <group ref={dessert} position={[0, .012, 0]} scale={DESSERT_SCALE}>{dish ? <DishModel item={d} left={meal ? phase.left.length / 4 : 1}/> : <DessertModel item={d} quarters={meal ? phase.left : undefined}/>}</group>}
+    {d && <group ref={dessert} position={[0, .012, 0]} scale={DESSERT_SCALE}>{dish ? <ServedDish item={d} left={meal ? phase.left.length / 4 : 1}/> : <DessertModel item={d} quarters={meal ? phase.left : undefined}/>}</group>}
     <group ref={lift}><group position={[0, .012, 0]}><Cloche glass={glass} tagged={!!d} knobRef={knob}/></group></group>
     {meal && <group position={DOME_SPOT.map(v => -v)}>
       {[0, 1].map(i => <group key={i}>
         <group ref={sides[i]} position={SIDES[i]} scale={.001}><group scale={PLATE_SCALE}><SidePlate/></group></group>
-        <group ref={forks[i]} rotation={[0, i ? -.3 : .3, 0]} scale={.001}>{dish ? <group scale={.9}><Chopsticks/></group> : <DessertFork/>}</group>
-        {round >= 0 && <group ref={slices[i]} visible={false}>{dish ? <group scale={2.2}><DishPortion item={d}/></group> : <DessertPortion item={d} portion={round * 2 + i} bites={bitten ? bites[i] : 0}/>}</group>}
+        <group ref={forks[i]} rotation={[0, i ? -.3 : .3, 0]} scale={.001}>{dish ? <group scale={.9}><DishUtensil item={d}/></group> : <DessertFork/>}</group>
+        {round >= 0 && <group ref={slices[i]} visible={false}>{dish ? <group scale={2.2}><ServedPortion item={d}/></group> : <DessertPortion item={d} portion={round * 2 + i} bites={bitten ? bites[i] : 0}/>}</group>}
       </group>)}
     </group>}
   </group>;
@@ -141,9 +141,9 @@ export function DessertDome() {
 // says is read by tapping the dome: it hangs above the bar like the tag
 // itself, and goes away on another tap.
 export function DomeTag({item, open, onClose, onEat}) {
-  const d = item?.kind === 'dish' ? normalizeDish(item) : normalizeDessert(item);
+  const d = item?.kind === 'dish' ? normalizeDish(item) : normalizeDessert(item), note = tagNote(d);
   return <>
-    {open && <div className="dome-tag" role="note" onClick={onClose}><b>{d.name}</b><small>{makerLabel(d.by)}{d.madeOn ? ` · ${dayLabel(d.madeOn)}` : ''}</small>{d.note && <em>「{d.note}」</em>}</div>}
+    {open && <div className="dome-tag" role="note" onClick={onClose}><b>{d.name}</b><small>{makerLabel(d.by)}{d.madeOn ? ` · ${dayLabel(d.madeOn)}` : ''}</small>{note && <em>「{note}」</em>}</div>}
     <button className="dome-eat" onClick={onEat}>一起吃</button>
   </>;
 }

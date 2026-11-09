@@ -343,6 +343,34 @@ test('make: the AI looks at the benches, makes things for her, and her page lets
   assert.match((await call('look', {action: 'spots'}, fern)).text, /bedroom\.nightstand\.slot-1 上抽屉左后（你藏的「阿狮」）/);
 });
 
+test('make: the AI looks in the fridge, cooks her a dish, and her page sets it under the dome', needsDatabase, async t => {
+  const {pool, call, http, fern, layout, save} = await home(t);
+  // Brought home from going out: a pumpkin from the fields, a honeycomb from the woods.
+  const here = {...layout, explore: {found: {'field:pumpkin': 1, 'woods:honeycomb': 1}}};
+  await save(here);
+  const bench = (await call('look', {action: 'bench'}, fern)).text;
+  assert.match(bench, /厨房（dish）：左边的炒锅 \[wok\] 炒一盘，右边的小锅 \[pot\] 煮一锅（汤、粥、面）/);
+  assert.match(bench, /冰箱里（[^）]*）：\[tomato\] 番茄（还够 2 道）、\[greens\] 青菜（还够 1 道）、\[pumpkin\] 南瓜（还够 1 道）\n/);
+  assert.match(bench, /一直有的：\[egg\] 鸡蛋、\[rice\] 米\n/);
+  assert.match(bench, /撒在上面、淋在上面的（extras）：\[scallion\] 葱花、\[garlic\] 蒜末、\[honey\] 蜂蜜（还能淋 3 次）\n/);
+  assert.ok(!/笋|茶叶|芋头/.test(bench), 'nothing not brought home yet');
+  assert.match((await call('make', {action: 'dish', items: ['bamboo'], method: 'pot'}, fern)).text, /还没有笋，出门去茶山上找一找/);
+  assert.match((await call('make', {action: 'dish', items: ['egg'], spot: 'bedroom.bed.slot-2'}, fern)).text, /菜不藏起来/);
+  const porridge = await call('make', {action: 'dish', items: ['pumpkin', 'rice'], extras: ['honey'], spot: 'dome', note: '熬到五点的人，先喝一碗再睡'}, fern);
+  assert.equal(porridge.isError, false, porridge.text);
+  assert.match(porridge.text, /^排上了，第 \d+ 件：煮一锅蜂蜜南瓜粥，放在餐桌的玻璃罩里。/);
+  assert.match((await call('make', {action: 'dessert', base: 'puff', spot: 'dome'}, fern)).text, /罩子里只放得下一样/);
+  const waiting = (await http('GET', '/api/home/acts', {as: 'Wren'})).body.acts;
+  const {home: after, entries} = applyActs(here, waiting, {day: DAY, now: Date.now(), defaults: FURNITURE});
+  assert.deepEqual(entries.map(e => e.what), ['煮了一锅蜂蜜南瓜粥给你，放在餐桌的玻璃罩里']);
+  await save(after);
+  assert.match((await pool.query('select state, answer from machine_acts order by id')).rows[0].answer, /^做好了，放在餐桌的玻璃罩里。/);
+  assert.match((await call('look', {action: 'backpack'}, fern)).text, /菜「蜂蜜南瓜粥」，在餐桌的玻璃罩里/);
+  // Under the dome now, and the pumpkin used: nothing more goes under it, and there is no pumpkin for another.
+  assert.match((await call('make', {action: 'dish', items: ['egg', 'rice'], spot: 'dome'}, fern)).text, /玻璃罩里已经有「蜂蜜南瓜粥」了/);
+  assert.match((await call('look', {action: 'bench'}, fern)).text, /\[pumpkin\] 南瓜（用完了）/);
+});
+
 test('outing: she waits at the door, the AI sees her there and says 走, her page lets it in', needsDatabase, async t => {
   const {pool, call, http, fern, layout, save} = await home(t);
   assert.match((await call('look', {}, fern)).text, /出门：今天出过 0 趟（一天 2 趟）；想出门就用 outing 的 go 约她。/);

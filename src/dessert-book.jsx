@@ -5,10 +5,10 @@ import * as THREE from 'three';
 import {QuietCanvas} from './quiet-canvas.jsx';
 import {Icon as NavigationIcon} from './icons.jsx';
 import {DessertModel} from './dessert-model.jsx';
-import {DishModel} from './cooking-tools.jsx';
+import {ServedDish} from './cooking-pot-food.jsx';
 import {dishTaste} from './cooking-recipe.js';
 import {DessertContext} from './dessert-dining.jsx';
-import {makerLabel,dayLabel} from './dessert-recipe.js';
+import {makerLabel,dayLabel,tagNote} from './dessert-recipe.js';
 import {play} from './sounds.js';
 import './dessert.css';
 
@@ -43,7 +43,7 @@ const VIEW = [7, 6, 9];
 function PagePicture({recipe}) {
   return <QuietCanvas orthographic camera={{position: VIEW, zoom: 78}} dpr={[1, 1.5]} gl={{alpha: true}}>
     <ambientLight intensity={1.15}/><hemisphereLight args={['#fff8e9', '#c3ac9b', .9]}/><directionalLight position={[-4, 8, 6]} intensity={2.4}/>
-    <group position={[0, -.45, 0]}>{recipe?.kind === 'dish' ? <DishModel item={recipe}/> : <DessertModel item={recipe}/>}</group>
+    <group position={[0, -.45, 0]}>{recipe?.kind === 'dish' ? <ServedDish item={recipe}/> : <DessertModel item={recipe}/>}</group>
   </QuietCanvas>;
 }
 function useWide() {
@@ -61,7 +61,7 @@ function Page({page, number, onWords, startWriting = false}) {
     <div className="dessert-page-picture"><PagePicture recipe={r}/></div>
     <h3>{r.name}</h3>
     <p className="dessert-page-who">{makerLabel(page.by)} · {dayLabel(page.eatenOn)}</p>
-    {page.note && <blockquote>「{page.note}」</blockquote>}
+    {tagNote(page) && <blockquote>「{tagNote(page)}」</blockquote>}
     {aroma && <dl className="dessert-scent-strip">{[['top','前调'],['heart','中调'],['base','尾调']].map(([key,label])=><div key={key}><dt>{label}</dt><dd>{aroma[key]}</dd></div>)}</dl>}
     <p className="dessert-house-taste">{taste}</p>
     {page.words?.machine&&<p className="dessert-inscription machine">{page.words.machine}</p>}

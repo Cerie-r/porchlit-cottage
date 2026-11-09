@@ -8,8 +8,10 @@ import {
 import {cleanHideSeek, hidingOn, markFound} from '../src/hide-and-seek.js';
 import {diaryDays} from '../src/diary-days.js';
 import {floorPieces} from '../src/furniture-range.js';
-import {COLORS, benchOf} from '../src/machine-make.js';
-import {validDessert, makerLabel} from '../src/dessert-recipe.js';
+import {COLORS, benchOf, dishMishaps, seeded} from '../src/machine-make.js';
+import {validDessert, makerLabel, tagNote} from '../src/dessert-recipe.js';
+import {dishRecipe, validDish} from '../src/cooking-recipe.js';
+import {domeItem, finishMeal} from '../src/dessert-state.js';
 import {albumOf} from '../src/album.js';
 import {rememberAlbum} from '../src/album-memory.js';
 import {shiftItem} from '../src/workshop-state.js';
@@ -568,6 +570,77 @@ test('make: a bouquet, a dessert, a doll, out of what the benches here have, tag
   // At most thirty things he made are kept in the home.
   const full = home({creations: Array.from({length: 30}, (_, i) => ({id: `made-${i}-0000-4000-8000`, kind: 'bouquet', name: '花', location: 'bag', by: {kind: 'machine', id: '34', name: '小桦'}}))});
   assert.match(prepareAct(full, {tool: 'make', action: 'bouquet', args: {flowers: rose, spot: 'bag'}}).problem, /30 样/);
+});
+
+test('make: a dish off her stove, out of what is in the fridge, set under the dome for the two of them', () => {
+  // What goes in (in the order it goes in, once each), which pot, what goes on top, how long it is on the fire.
+  const porridge = {items: ['pumpkin', 'rice'], extras: ['honey'], spot: 'dome', note: '熬到五点的人，先喝一碗再睡'};
+  assert.deepEqual(actArgs('make', 'dish', porridge).args, {note: '熬到五点的人，先喝一碗再睡', items: ['pumpkin', 'rice'], method: 'pot', extras: ['honey'], spot: 'dome'});
+  assert.deepEqual(actArgs('make', 'dish', {items: ['tomato', 'egg'], heat: 'browned'}).args, {items: ['tomato', 'egg'], method: 'wok', heat: 'browned', spot: 'bag'});
+  assert.deepEqual(actArgs('make', 'dish', {items: ['egg'], heat: 'just'}).args, {items: ['egg'], method: 'wok', spot: 'bag'}, 'just right says nothing');
+  for (const bad of [{}, {items: []}, {items: ['tomato', 'tomato']}, {items: ['tomato', 'greens', 'pea', 'egg', 'pumpkin']}, {items: ['cheese']}, {items: ['egg'], method: 'oven'}, {items: ['egg'], extras: ['salt']}, {items: ['egg'], extras: ['honey', 'honey']}, {items: ['egg'], heat: 'raw'}]) {
+    assert.ok(actArgs('make', 'dish', bad).problem, JSON.stringify(bad));
+  }
+  assert.match(actArgs('make', 'dish', {items: ['rice', 'egg'], method: 'wok'}).problem, /米得用小锅熬粥/);
+  assert.match(actArgs('make', 'dish', {items: ['tea'], method: 'wok'}).problem, /茶叶得用小锅煮/);
+  // Where it goes: the dome is for something to eat, and a dish is eaten hot, not hidden.
+  assert.match(actArgs('make', 'dish', {items: ['egg'], spot: 'bedroom.bed.slot-2'}).problem, /菜不藏起来/);
+  assert.match(actArgs('make', 'bouquet', {flowers: [{type: 'rose', color: '#d9a1bd'}], spot: 'dome'}).problem, /只放吃的/);
+  assert.equal(actArgs('make', 'dessert', {base: 'puff', spot: 'dome'}).args.spot, 'dome');
+  // The fridge: the two tomatoes and the greens the kitchen opened with, a pumpkin from the fields and a honeycomb from
+  // the woods. Eggs, rice, spring onion and garlic are always there; nothing else is yet.
+  const h = home({machine: {acts: [], called: {34: '亲爱的'}}, explore: {found: {'field:pumpkin': 1, 'woods:honeycomb': 1}}});
+  assert.deepEqual(benchOf(h).kitchen, {items: ['tomato', 'greens', 'pumpkin', 'egg', 'rice'], extras: ['scallion', 'garlic', 'honey']});
+  assert.match(prepareAct(h, {tool: 'make', action: 'dish', args: {items: ['bamboo', 'rice'], method: 'pot', spot: 'bag'}}).problem, /还没有笋，出门去茶山上找一找/);
+  assert.match(prepareAct(h, {tool: 'make', action: 'dish', args: {items: ['egg', 'rice'], method: 'pot', extras: ['walnut'], spot: 'bag'}}).problem, /还没有核桃，出门去林子深处找一找/);
+  const asked = actArgs('make', 'dish', porridge).args;
+  assert.ok(prepareAct(h, {tool: 'make', action: 'dish', args: asked}).args);
+  // The dome holds one: what she has under it stays, and only one thing at a time waits to go in.
+  const under = {...h, creations: [...h.creations, {id: 'cake-under-the-dome', kind: 'dessert', name: '草莓蛋糕', location: 'dome', slot: 0}]};
+  assert.match(prepareAct(under, {tool: 'make', action: 'dish', args: asked}).problem, /玻璃罩里已经有「草莓蛋糕」了，等她吃掉再放/);
+  assert.match(prepareAct(h, {tool: 'make', action: 'dish', args: asked}, {waiting: [{tool: 'make', action: 'dessert', args: {base: 'puff', spot: 'dome'}}]}).problem, /只放得下一样/);
+  // How the AI is told: cooked in the pot, stir-fried in the wok.
+  assert.equal(actLine({tool: 'make', action: 'dish', args: asked}, {}), '煮一锅蜂蜜南瓜粥，放在餐桌的玻璃罩里');
+  assert.equal(actLine({tool: 'make', action: 'dish', args: {items: ['tomato', 'egg'], method: 'wok', spot: 'bag'}}, {}), '炒一盘番茄炒蛋，放进她的背包');
+  assert.equal(actLine({tool: 'make', action: 'dish', args: {items: ['wheat', 'egg'], method: 'pot', name: '长寿面', spot: 'table'}}, {}), '煮一锅「长寿面」，放在客厅茶几上');
+  // Let in: under the dome, tagged as his with his line on the tag; the pumpkin and a drizzle of honey come out of
+  // hers, so there is no pumpkin for another.
+  const key = '5eed0000-0000-4000-8000-000000000001';
+  const r = applyActs(h, [{...act('make', 'dish', porridge), key}, act('make', 'dish', {items: ['tomato', 'egg'], spot: 'dome'}), act('make', 'dish', {items: ['pumpkin'], method: 'pot'})], ctx());
+  assert.deepEqual(r.entries.map(e => e.ok ? e.what : e.why), ['煮了一锅蜂蜜南瓜粥给你，放在餐桌的玻璃罩里', '餐桌的玻璃罩里已经有「蜂蜜南瓜粥」了，没放。', '南瓜用完了，出门再去田里找一些。']);
+  const dish = domeItem(r.home.creations), mishaps = dishMishaps(['pumpkin', 'rice'], 'pot', seeded(key));
+  assert.deepEqual(dishRecipe(dish), {kind: 'dish', v: 1, items: ['pumpkin', 'rice'], method: 'pot', extras: ['honey'], name: '蜂蜜南瓜粥', ...(mishaps.length ? {mishaps} : {})});
+  assert.deepEqual([dish.by, dish.madeOn], [{kind: 'machine', id: '34', name: '亲爱的', note: '熬到五点的人，先喝一碗再睡'}, DAY]);
+  assert.ok(validDish(dish));
+  assert.equal(tagNote(dish), '熬到五点的人，先喝一碗再睡');
+  assert.deepEqual(r.home.spent.produce, {pumpkin: 1, honey: 1});
+  // Eaten together, it has its page in the book: who made it, and his line.
+  const page = finishMeal(r.home, dish.id, '2026-10-27').dessertBook.at(-1);
+  assert.deepEqual([page.recipe.name, makerLabel(page.by), tagNote(page)], ['蜂蜜南瓜粥', '亲爱的做的', '熬到五点的人，先喝一碗再睡']);
+  // The diary says he cooked it, not that she did.
+  assert.match(machineDiary(r.home).map(l => l.text).join('；'), /亲爱的来过：煮了一锅蜂蜜南瓜粥给你，放在餐桌的玻璃罩里/);
+  assert.ok(!diaryDays(r.home).flatMap(d => d.lines).some(l => l.kind === 'made'), 'not as a dish she made');
+});
+
+test('make: a dish the AI cooks can have a little accident at the stove, as hers can, the same each time it is let in', () => {
+  const h = home({explore: {found: {'field:pumpkin': 3}}});
+  const keys = Array.from({length: 60}, (_, i) => `${(0x1000 + i).toString(16).padStart(8, '0')}-0000-4000-8000-000000000000`);
+  const cook = (args, key) => one(h, {...act('make', 'dish', args), key});
+  // In the pot it can only boil over; in the wok with a tomato, the tomato squirts, the oil spits or the wok flares,
+  // two of them at most.
+  const pot = keys.map(key => cook({items: ['pumpkin', 'rice']}, key));
+  const potHad = pot.map(c => c.home.creations.at(-1).mishaps || []);
+  assert.ok(potHad.every(m => m.length <= 1 && m.every(id => id === 'boilover')));
+  assert.ok(potHad.some(m => m.length) && potHad.some(m => !m.length), 'now and then, not every time');
+  const wokHad = keys.map(key => cook({items: ['tomato', 'egg']}, key).home.creations.at(-1).mishaps || []);
+  assert.ok(wokHad.every(m => m.length <= 2 && m.every(id => ['juice', 'splatter', 'flame'].includes(id))));
+  assert.ok(wokHad.some(m => m.length === 2));
+  // He is told what happened; her dish says it on its page when it is eaten.
+  const over = pot.find(c => c.home.creations.at(-1).mishaps);
+  assert.equal(over.entry.said, '做好了，放进了她的背包。做的时候中间溢了一下锅。');
+  assert.equal(pot.find(c => !c.home.creations.at(-1).mishaps).entry.said, '做好了，放进了她的背包。');
+  // Letting the same act in again comes out the same.
+  assert.deepEqual(keys.map(key => cook({items: ['pumpkin', 'rice']}, key).home.creations.at(-1).mishaps || []), potHad);
 });
 
 test('the coffee table\'s places are shared when things on it are moved, too', () => {

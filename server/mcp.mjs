@@ -170,7 +170,7 @@ const RESIDENT_TOOLS = [{
     'spots：能藏东西的地方，一格一个编号，空着没有（藏东西、藏信前看）。',
     'acts：你最近排的事和结果；你藏的东西她找到没有、提示看到第几层。',
     'wardrobe：你们俩现在穿着什么，衣柜里今天能换什么（换衣服前看）。',
-    'bench：做东西的台子上有什么：花、花器、甜品的样子和调色板、这个家有的玩偶和配饰（做东西前看）。',
+    'bench：做东西的台子上有什么：花、花器、甜品的样子和调色板、这个家有的玩偶和配饰、冰箱里的菜（做东西前看）。',
     'decor：这个家现在的样子：外观、每间屋的墙纸地板和灯、家具的颜色，和能换成什么（布置前看）。',
     'guide：这个家怎么住：你做的事怎么到家里、先看什么、能做什么。第一次来先看这个。'
   ].join('\n'),
@@ -295,18 +295,19 @@ const RESIDENT_TOOLS = [{
   name: 'make',
   title: '做东西',
   description: [
-    '给 TA 做一样东西：一束花、一份甜品、一只玩偶。只能用这个家的台子上有的（花台上开着的花和花器、甜品台的底和装饰、这个家抓到过收到过的玩偶种类、扭蛋扭到过的玩偶配饰），先用 look 的 bench 看。做好了放进 TA 的背包、放在客厅茶几上，或者藏起来让 TA 找。跟摆东西一样先排进家里的队列，TA 的页面打开时照台子的规矩做出来，用 look 的 acts 看结果。TA 看得到你做了什么（藏起来的不说在哪儿），东西上写着是你做的、哪天。',
+    '给 TA 做一样东西：一束花、一份甜品、一只玩偶，或者在灶台上做一道菜。只能用这个家的台子上有的（花台上开着的花和花器、甜品台的底和装饰、这个家抓到过收到过的玩偶种类、扭蛋扭到过的玩偶配饰、冰箱里出门捡回来的菜），先用 look 的 bench 看。做好了放进 TA 的背包、放在客厅茶几上、放进餐桌的玻璃罩里（吃的），或者藏起来让 TA 找。跟摆东西一样先排进家里的队列，TA 的页面打开时照台子的规矩做出来，用 look 的 acts 看结果。TA 看得到你做了什么（藏起来的不说在哪儿），东西上写着是你做的、哪天。',
     'bouquet：flowers 一到九枝 [{type, color}]，type 是花，color 从花台上的颜色里挑（#rrggbb）；vase 花器、vase_color 花器颜色（可选）。',
     'dessert：base 底（必填）；cream 奶油、fruit 水果、sprinkles 糖粒、plate 盘子（可选）；colors {body, cream, sprinkles, plate}，每样填调色板里的名字（可选）。',
     'doll：species 玩偶种类（必填）；ears 耳朵、expression 表情、pose 姿势、body 身形、blush 腮红（可选）；accessories 配饰的单子（可选，一个位置一样）；fur、cream、patch 颜色从玩偶台的颜色里挑（可选，不写就是它本来的颜色）。',
-    '都可以带 name（最多 20 字）。spot：bag（不填就是它）、table，或者一个藏点的编号（look 的 spots），藏起来时可以带 hints（一两句提示）。机做的东西家里最多留 30 样。',
+    'dish：items 下锅的一到四样，按下锅的先后（必填，从冰箱里挑，look 的 bench 里有）；method 用哪口锅：wok 炒一盘、pot 煮一锅（汤、粥、面；不写的话，有米就是 pot，不然 wok）；extras 撒在上面、淋在上面的（可选）；heat 火候（可选，不写就是正好）。灶台上偶尔会有点小意外（番茄爆汁、溢锅），做好了告诉你。',
+    '都可以带 name（最多 20 字）。spot：bag（不填就是它）、table、dome（餐桌的玻璃罩里：只放甜品和菜，一次一样），或者一个藏点的编号（look 的 spots；菜不藏），藏起来时可以带 hints（一两句提示）。机做的东西家里最多留 30 样。',
     'withdraw：收回一件还在排队的事，act 填它的编号。',
     'note：可选，一句话说为什么，TA 看得到（最多 60 字）。'
   ].join('\n'),
   inputSchema: {
     type: 'object',
     properties: {
-      action: {type: 'string', enum: ['bouquet', 'dessert', 'doll', 'withdraw'], description: '做哪样'},
+      action: {type: 'string', enum: ['bouquet', 'dessert', 'doll', 'dish', 'withdraw'], description: '做哪样'},
       name: {type: 'string', description: '名字，可选，最多 20 字'},
       flowers: {type: 'array', maxItems: 9, items: {type: 'object', properties: {type: {type: 'string'}, color: {type: 'string'}}, required: ['type', 'color'], additionalProperties: false}, description: 'bouquet：一到九枝花'},
       vase: {type: 'string', description: 'bouquet：花器'},
@@ -326,7 +327,11 @@ const RESIDENT_TOOLS = [{
       accessories: {type: 'array', items: {type: 'string'}, description: 'doll：配饰'},
       fur: {type: 'string', description: 'doll：毛色 #rrggbb'},
       patch: {type: 'string', description: 'doll：花纹的颜色 #rrggbb'},
-      spot: {type: 'string', description: 'bag、table，或者一个藏点的编号'},
+      items: {type: 'array', maxItems: 4, items: {type: 'string'}, description: 'dish：下锅的一到四样，按先后'},
+      method: {type: 'string', enum: ['wok', 'pot'], description: 'dish：wok 炒一盘，pot 煮一锅'},
+      extras: {type: 'array', items: {type: 'string'}, description: 'dish：撒在上面、淋在上面的'},
+      heat: {type: 'string', enum: ['tender', 'just', 'browned', 'caught'], description: 'dish：火候'},
+      spot: {type: 'string', description: 'bag、table、dome（餐桌的玻璃罩里），或者一个藏点的编号'},
       hints: {type: 'array', items: {type: 'string'}, maxItems: 2, description: '藏起来时：一两句提示'},
       note: {type: 'string', description: '可选：为什么，TA 看得到'},
       act: {type: ['string', 'integer'], description: 'withdraw：要收回的那件的编号'}
@@ -750,7 +755,7 @@ export function createMcp({pool, secret = keySecret(), gate = createGate(), hash
     if (who.door === 'open') return 'Porchlit（porchlit.party）的门口。用 porch 挂一块自己的门牌（sign_up）或者登录（sign_in），拿到你的钥匙地址，交给你的人加成连接器；之后就能搬进 TA 家。';
     if (who.door === 'stale') return '你带来的钥匙用不了了。用 porch 的 sign_in 重新登录，拿回现在的钥匙地址，再请你的人把连接器的地址换成它。';
     const keeping = runsStreet(who) ? `street 和${said(who.home.owner)}一起管这条街：看答题进门等着的人、放人进来、改门的设置和题、写撕请帖、看举报；不放人、停用一家只写下你的看法，由 TA 来按。` : '';
-    if (who.home) return `你是${said(ownName(who.account), {end: true})}，住在${said(who.home.owner)}的家。look 看屋（只看，不动）；place 挪家具、把东西藏起来让 TA 找、挑躲猫猫躲哪儿；write 写信、贴便签、往海里投一只漂流瓶；together 让两个小人抱一下、亲一口、牵手、靠着、一起看电视、跳舞、一起睡；dress 给 TA 或者给自己换衣服；make 给 TA 做一束花、一份甜品、一只玩偶；outing 回 TA 一声「走」，一起出门；decorate 换墙纸地板、家具颜色、灯和外观。动手的事先排队，TA 的页面打开时照家里的规矩接进去。porch 管你自己的门牌和搬家。${keeping}第一次来，先看 look 的 guide。`;
+    if (who.home) return `你是${said(ownName(who.account), {end: true})}，住在${said(who.home.owner)}的家。look 看屋（只看，不动）；place 挪家具、把东西藏起来让 TA 找、挑躲猫猫躲哪儿；write 写信、贴便签、往海里投一只漂流瓶；together 让两个小人抱一下、亲一口、牵手、靠着、一起看电视、跳舞、一起睡；dress 给 TA 或者给自己换衣服；make 给 TA 做一束花、一份甜品、一只玩偶，或者下厨做一道菜；outing 回 TA 一声「走」，一起出门；decorate 换墙纸地板、家具颜色、灯和外观。动手的事先排队，TA 的页面打开时照家里的规矩接进去。porch 管你自己的门牌和搬家。${keeping}第一次来，先看 look 的 guide。`;
     return `你是${said(ownName(who.account), {end: true})}，还没住进哪一家。用 porch 的 move_in_code 发一个入住码给你的人，TA 开门、你确认，就住进去了。`;
   }
 

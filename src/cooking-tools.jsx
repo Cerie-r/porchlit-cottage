@@ -2,6 +2,7 @@ import React,{useMemo} from 'react';
 import * as THREE from 'three';
 import {mergeVertices} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {toolMaterial,Egg,ShellDish} from './dessert-tools.jsx';
+import {Taro,TaroCubes,BambooShoot,BambooSlices,WheatEar,Noodles,TeaSprig,TeaLeaves,ExtraBits} from './cooking-pantry-food.jsx';
 
 // The cooking counter: one long worktop that never changes, only what is on it does. From the left, a wash basin
 // under a gooseneck tap, a round chopping block with its cleaver, a two-burner hob (a wok on the left ring, a little
@@ -523,6 +524,11 @@ export function Raw({id, washed = false}) {
   if (id === 'greens') return <Greens washed={washed}/>;
   if (id === 'pumpkin') return <Pumpkin washed={washed}/>;
   if (id === 'pea') return <group>{POD_SPOTS.map(([x, z, t], i) => <group key={i} position={[x, 0, z]} rotation={[0, t, 0]}><PeaPod washed={washed}/></group>)}</group>;
+  // What going out brings besides (src/cooking-pantry-food.jsx).
+  if (id === 'taro') return <Taro washed={washed}/>;
+  if (id === 'bamboo') return <BambooShoot washed={washed}/>;
+  if (id === 'wheat') return <WheatEar/>;
+  if (id === 'tea') return <TeaSprig washed={washed}/>;
   return <Tomato washed={washed}/>;
 }
 // Cut (or shelled) and waiting in its dish: a small heap.
@@ -530,6 +536,10 @@ export function Prepped({id, seed = 1}) {
   if (id === 'greens') return <GreensPieces n={10} spread={.2} seed={seed}/>;
   if (id === 'pumpkin') return <PumpkinCubes n={7} spread={.18} seed={seed}/>;
   if (id === 'pea') return <Peas n={12} spread={.16} seed={seed}/>;
+  if (id === 'taro') return <TaroCubes n={7} spread={.18} seed={seed}/>;
+  if (id === 'bamboo') return <BambooSlices n={8} spread={.18} seed={seed}/>;
+  if (id === 'wheat') return <Noodles n={8} spread={.25} seed={seed}/>;
+  if (id === 'tea') return <TeaLeaves n={7} spread={.16} seed={seed}/>;
   return <TomatoPieces n={6} spread={.18} seed={seed} soft={0}/>;
 }
 // Cooked, in the wok or on a plate: n pieces spread over `spread`. set: how far the egg has set (0 runny); soft: how
@@ -540,10 +550,14 @@ export function Cooked({id, heat = 'just', n, spread = .5, seed = 1, set = 1, so
   if (id === 'greens') return <GreensPieces n={n ?? 18} spread={spread} seed={seed} cooked={soft > .4} heat={heat}/>;
   if (id === 'pumpkin') return <PumpkinCubes n={n ?? 10} spread={spread * .9} seed={seed} cooked={soft > .4} heat={heat}/>;
   if (id === 'pea') return <Peas n={n ?? 20} spread={spread * .9} seed={seed} cooked={soft > .4}/>;
+  if (id === 'taro') return <TaroCubes n={n ?? 9} spread={spread * .9} seed={seed} cooked={soft > .4} heat={heat}/>;
+  if (id === 'bamboo') return <BambooSlices n={n ?? 12} spread={spread * .9} seed={seed} cooked={soft > .4} heat={heat}/>;
+  if (id === 'wheat') return <Noodles n={n ?? 10} spread={spread} seed={seed} cooked={soft > .4} heat={heat}/>;
+  if (id === 'tea') return <TeaLeaves n={n ?? 8} spread={spread * .8} seed={seed} cooked/>;
   return null;
 }
-export const PIECES = {egg: 9, tomato: 8, greens: 18, pumpkin: 10, pea: 20};
-export const FOOD_SEEDS = {egg: 3, tomato: 4, greens: 5, pumpkin: 6, pea: 7};
+export const PIECES = {egg: 9, tomato: 8, greens: 18, pumpkin: 10, pea: 20, taro: 9, bamboo: 12, wheat: 10, tea: 8};
+export const FOOD_SEEDS = {egg: 3, tomato: 4, greens: 5, pumpkin: 6, pea: 7, taro: 8, bamboo: 9, wheat: 10, tea: 11};
 // What a plate holds once it is done: every thing that went in, fewer of each the more there are, in their own
 // sauce or a little oil, spring onion and garlic on top if they went in.
 export function DishFood({items = [], extras = [], heat = 'just', spread = .55}) {
@@ -553,6 +567,7 @@ export function DishFood({items = [], extras = [], heat = 'just', spread = .55})
     {list.map(id => <Cooked key={id} id={id} heat={heat} n={Math.max(3, Math.round(PIECES[id] * share))} spread={spread} seed={FOOD_SEEDS[id]}/>)}
     {extras.includes('garlic') && <Garlic n={7} spread={spread * .8}/>}
     {extras.includes('scallion') && <Scallion/>}
+    <ExtraBits extras={extras} spread={spread}/>
   </group>;
 }
 // A dish on its plate, the way it came out (src/cooking-recipe.js): what went in and how long it was on the fire.

@@ -3,12 +3,18 @@ import {useFrame,useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import {QuietCanvas} from './quiet-canvas.jsx';
 import {EggStep,WhiskStep} from './dessert-steps.jsx';
-import {Bowl,bowlRadiusAt} from './dessert-tools.jsx';
+import {Bowl,bowlRadiusAt,Egg} from './dessert-tools.jsx';
 import {ease,easeIn,easeOut,span,buzz} from './dessert-motion.js';
 import {normalizeDessert} from './dessert-recipe.js';
 import {play} from './sounds.js';
 import {STATION as S,BOWL_SCALE,BLOCK_H,BURNER_TOP,WOK_FLOOR,WOK_LIP,WOK_LIP_R,wokInsideAt,TAP_SPOUT,BASIN_FLOOR,BASIN_LIP,basinRadiusAt,Worktop,WashBasin,Tap,ChoppingBlock,Cleaver,Hob,Knob,Wok,Turner,Pot,Plate,OilAndSalt,TomatoWedge,GreensPieces,PumpkinCubes,PeaPod,Peas,PrepDish,Raw,Prepped,Cooked,DishFood,Scallion,Gloss,Garlic,DishModel,POD_SPOTS,PIECES,FOOD_SEEDS} from './cooking-tools.jsx';
-import {INGREDIENTS,EXTRAS,stepsFor,heatAfter,HEAT_WORDS,BROWNING,CATCHING} from './cooking-recipe.js';
+import {INGREDIENTS,EXTRAS,stepsFor,heatAfter,HEAT_WORDS,BROWNING,CATCHING,mishapsFor,heatWords,extraVerb,teaEggs} from './cooking-recipe.js';
+import {MISHAPS,MISHAPS_MAX,mayHappen,whichTap,whichPod,mishapWords} from './cooking-mishaps.js';
+import {JuiceSquirt,JuiceSpots,RunawayPea,OilSpit,WokFlame} from './cooking-mishap-fx.jsx';
+import {WaterStep,BoilStep,ServeStep,POT_AT,POT_SCALE} from './cooking-pot-steps.jsx';
+import {SoupBowl,ServedDish,FoamStain,RiceBowl} from './cooking-pot-food.jsx';
+import {KneadStep,RollStep,DOUGH_AT} from './cooking-dough-steps.jsx';
+import {DoughSheet,Noodles,TaroCubes,BambooSlices,ExtraBits} from './cooking-pantry-food.jsx';
 import './dessert.css';
 import './cooking.css';
 
@@ -31,15 +37,16 @@ const isVeg = id => INGREDIENTS[id] && !INGREDIENTS[id].staple;
 const WAIT = [S.basin[0] + 1.6, 0, S.basin[2] + 1.0];
 const ON_BLOCK = {
   tomato: [S.block[0] + .6, BLOCK_H + .256, S.block[2] - .15], greens: [S.block[0] + .2, BLOCK_H + .02, S.block[2] - .3],
-  pumpkin: [S.block[0] + .5, BLOCK_H + .26, S.block[2] - .1], pea: [S.block[0] + .45, BLOCK_H, S.block[2] + .05]
+  pumpkin: [S.block[0] + .5, BLOCK_H + .26, S.block[2] - .1], pea: [S.block[0] + .45, BLOCK_H, S.block[2] + .05],
+  taro: [S.block[0] + .55, BLOCK_H, S.block[2] - .1], bamboo: [S.block[0] + .55, BLOCK_H, S.block[2] - .05], wheat: DOUGH_AT
 };
-const LIFT = {tomato: .256, pumpkin: .26, greens: .02, pea: 0};
+const LIFT = {tomato: .256, pumpkin: .26, greens: .02, pea: 0, taro: 0, bamboo: 0, wheat: 0, tea: 0};
 const PREP = [-.9, 0, .9, 1.8].map(dx => [S.block[0] + dx, 0, -1.55]);
 // Cut wedges lie on the left of the block in two rows, each on a cut face, clear of the next and of the tomato.
 const WEDGE_SPOTS = Array.from({length: 8}, (_, i) => ({at: [S.block[0] - .62 + (i % 4) * .3, BLOCK_H + .005, S.block[2] + (i < 4 ? .55 : -.12)], turn: 0}));
 const HEAP = [S.block[0] - .52, BLOCK_H, S.block[2] + .35];
 // Where what was cut lies on the block, roughly: what it is swept up from.
-const PILE = {tomato: [S.block[0] - .2, BLOCK_H, S.block[2] + .2], greens: HEAP, pumpkin: HEAP, pea: HEAP};
+const PILE = {tomato: [S.block[0] - .2, BLOCK_H, S.block[2] + .2], greens: HEAP, pumpkin: HEAP, pea: HEAP, taro: HEAP, bamboo: HEAP, wheat: HEAP};
 
 // ---- the camera: one view per step, eased from one to the next ----
 const SHOTS = {
@@ -52,9 +59,25 @@ const SHOTS = {
   fire: {target: [S.wok[0] + .55, .4, S.wok[2] + .35], dir: [0, .62, 1], w: 4.2, h: 2.9},
   cook: {target: [S.wok[0] - .2, .62, S.wok[2] - .15], dir: [0, 1.1, 1], w: 4.2, h: 3.3},
   plate: {target: [(S.wok[0] + S.plate[0]) / 2 + .2, .65, S.plate[2] - .2], dir: [0, .85, 1], w: 6.4, h: 3.4},
-  done: {target: [S.plate[0] - .2, .25, S.plate[2]], dir: [0, 1.3, 1], w: 2.8, h: 2.5}
+  done: {target: [S.plate[0] - .2, .25, S.plate[2]], dir: [0, 1.3, 1], w: 2.8, h: 2.5},
+  // The little pot on the right ring (src/cooking-pot-steps.jsx): its knob, the jug pouring, the pot itself, and
+  // the pot and the bowl together for ladling.
+  firePot: {target: [S.pot[0] - .2, .4, S.pot[2] + .45], dir: [0, .62, 1], w: 4.2, h: 2.9},
+  water: {target: [S.pot[0] + .45, .85, S.pot[2] - .1], dir: [0, .95, 1], w: 3.8, h: 3.0},
+  boil: {target: [S.pot[0] - .15, .72, S.pot[2] + .05], dir: [0, 1.15, 1], w: 3.7, h: 3.1},
+  serve: {target: [(S.pot[0] + S.plate[0]) / 2, .7, (S.pot[2] + S.plate[2]) / 2], dir: [0, .9, 1], w: 4.9, h: 3.3},
+  donePot: {target: [S.plate[0] - .1, .35, S.plate[2]], dir: [0, 1.2, 1], w: 2.6, h: 2.4}
 };
-const shotOf = (step, phase) => {const kind = step.split(':')[0]; return SHOTS[phase === 'prep' ? 'prep' : kind === 'shell' ? 'cut' : kind] || SHOTS.done;};
+const shotOf = (step, phase, method = 'wok') => {
+  const kind = step.split(':')[0], pot = method === 'pot';
+  if (phase === 'prep') return SHOTS.prep;
+  if (kind === 'shell') return SHOTS.cut;
+  if (kind === 'rinse') return SHOTS.wash;
+  if (kind === 'knead' || kind === 'roll') return SHOTS.cut;
+  if (pot && kind === 'fire') return SHOTS.firePot;
+  if (pot && kind === 'done') return SHOTS.donePot;
+  return SHOTS[kind] || SHOTS.done;
+};
 function StepCamera({shot, step}) {
   const {camera, size, invalidate} = useThree(), now = useRef(null);
   useEffect(() => {invalidate();}, [step, shot, size.width, size.height, invalidate]);
@@ -77,14 +100,15 @@ function arc(out, a, b, u, high = .6) {
 // Tap: it hops into the basin, the tap runs and the water comes up; a couple of seconds' rinse, the tap goes off
 // and it is lifted out onto the block, shining wet.
 const WATER = .6, waterLevel = w => BASIN_FLOOR + .02 + w * (BASIN_LIP - .14);
-function WashStep({id, taps, onHint, onTap, onDone}) {
-  const invalidate = useThree(s => s.invalidate), name = INGREDIENTS[id].name, greens = id === 'greens';
+// Rice is rinsed the same way, in its bowl, the water going cloudy; then it waits in its bowl behind the block.
+function WashStep({id, taps, to: dest, onHint, onTap, onDone}) {
+  const invalidate = useThree(s => s.invalidate), name = INGREDIENTS[id].name, greens = id === 'greens', rice = id === 'rice', lift = LIFT[id] || 0;
   const veg = useRef(), water = useRef(), stream = useRef(), rings = useRef();
   const st = useRef({phase: 'wait', t0: performance.now()}), seen = useRef(taps), [washed, setWashed] = useState(false);
-  const B = useMemo(() => v3(S.basin), []), from = useMemo(() => v3(WAIT).add(new THREE.Vector3(0, LIFT[id], 0)), [id]);
-  const to = useMemo(() => v3(ON_BLOCK[id]), [id]), tmp = useMemo(() => new THREE.Vector3(), []);
+  const B = useMemo(() => v3(S.basin), []), from = useMemo(() => v3(WAIT).add(new THREE.Vector3(0, lift, 0)), [id]);
+  const to = useMemo(() => v3(dest || ON_BLOCK[id]), [id]), tmp = useMemo(() => new THREE.Vector3(), []);
   const turn0 = greens ? -1.2 : .4, turn1 = greens ? 0 : .4;
-  useEffect(() => {onHint(`点一下，把${name}放进盆里冲一冲`);}, []);
+  useEffect(() => {onHint(rice ? '点一下，淘一淘米' : `点一下，把${name}放进盆里冲一冲`);}, []);
   useEffect(() => {
     if (taps === seen.current) return; seen.current = taps;
     const s = st.current; if (s.phase === 'wait') {s.phase = 'in'; s.t0 = performance.now(); invalidate();}
@@ -93,14 +117,14 @@ function WashStep({id, taps, onHint, onTap, onDone}) {
     const s = st.current, t = (performance.now() - s.t0) / 1000, g = veg.current;
     if (!g) return;
     const w = s.phase === 'rinse' ? Math.min(WATER, t / 1.2 * WATER) : s.phase === 'out' || s.phase === 'gone' ? WATER : 0;
-    const lv = waterLevel(w), inBasin = tmp.copy(B).setY(waterLevel(Math.max(w, .3)) - (greens ? .04 : LIFT[id] * .1));
+    const lv = waterLevel(w), inBasin = tmp.copy(B).setY(waterLevel(Math.max(w, .3)) - (greens ? .04 : rice ? .12 : lift * .1));
     if (s.phase === 'wait') {g.position.copy(from); g.rotation.set(0, turn0, 0);}
     else if (s.phase === 'in') {
       arc(g.position, from, inBasin, easeIn(t / .55), .55); g.rotation.y = turn0 + t * 2;
-      if (t >= .55) {s.phase = 'rinse'; s.t0 = performance.now(); onTap(true); buzz(10); onHint('哗——冲一冲');}
+      if (t >= .55) {s.phase = 'rinse'; s.t0 = performance.now(); onTap(true); buzz(10); onHint(rice ? '哗——淘一淘，水都白了' : '哗——冲一冲');}
     } else if (s.phase === 'rinse') {
-      g.position.copy(inBasin); g.position.y += Math.sin(state.clock.elapsedTime * 5) * .02; g.rotation.y += .02; g.rotation.z = Math.sin(state.clock.elapsedTime * 3) * .08;
-      if (t >= 2.4) {s.phase = 'out'; s.t0 = performance.now(); onTap(false); setWashed(true); buzz(12); onHint(`${name}洗干净了，亮晶晶的`);}
+      g.position.copy(inBasin); g.position.y += Math.sin(state.clock.elapsedTime * 5) * .02; g.rotation.y += .02; g.rotation.z = Math.sin(state.clock.elapsedTime * 3) * (rice ? .03 : .08);
+      if (t >= 2.4) {s.phase = 'out'; s.t0 = performance.now(); onTap(false); setWashed(true); buzz(12); onHint(rice ? '米淘好了，白白净净的' : `${name}洗干净了，亮晶晶的`);}
     } else if (s.phase === 'out') {
       const u = ease(span(t, .35, 1.25)); arc(g.position, inBasin, to, u, 1); g.rotation.set(0, turn0 + (turn1 - turn0) * u, 0);
       if (t >= 1.5 && !s.told) {s.told = true; s.phase = 'gone'; onDone();}
@@ -113,7 +137,7 @@ function WashStep({id, taps, onHint, onTap, onDone}) {
     rings.current.position.y = lv + .004; rings.current.children.forEach((m, i) => {const ph = (state.clock.elapsedTime * .9 + i / 3) % 1; m.scale.setScalar(.12 + ph * .6); m.material.opacity = .5 * (1 - ph);});
     if (s.phase !== 'gone') invalidate();
   });
-  const waterMat = useMemo(() => new THREE.MeshStandardMaterial({color: '#cfe6ec', transparent: true, opacity: .55, roughness: .05, metalness: .1, depthWrite: false}), []);
+  const waterMat = useMemo(() => new THREE.MeshStandardMaterial({color: rice ? '#eeefe8' : '#cfe6ec', transparent: true, opacity: rice ? .82 : .55, roughness: .05, metalness: .1, depthWrite: false}), []);
   const streamMat = useMemo(() => new THREE.MeshStandardMaterial({color: '#e8f5f8', transparent: true, opacity: .7, roughness: .05, depthWrite: false}), []);
   const ringMats = useMemo(() => [0, 1, 2].map(() => new THREE.MeshBasicMaterial({color: '#ffffff', transparent: true, opacity: .4, depthWrite: false})), []);
   return <group>
@@ -122,7 +146,7 @@ function WashStep({id, taps, onHint, onTap, onDone}) {
       <mesh ref={stream} material={streamMat} visible={false}><cylinderGeometry args={[.045, .055, 1, 12, 1, true]}/></mesh>
       <group ref={rings} visible={false}>{ringMats.map((m, i) => <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} material={m}><torusGeometry args={[1, .02, 4, 36]}/></mesh>)}</group>
     </group>
-    <group ref={veg}><Raw id={id} washed={washed}/></group>
+    <group ref={veg}>{rice ? <RiceBowl washed={washed}/> : <Raw id={id} washed={washed}/>}</group>
   </group>;
 }
 
@@ -130,10 +154,13 @@ function WashStep({id, taps, onHint, onTap, onDone}) {
 // The cleaver waits over it; each tap is one chop. A tomato loses a pair of wedges a chop, greens a length, a
 // pumpkin a handful of cubes. Peas are shelled instead: each tap splits a pod and its peas come out. Done, what
 // was cut is swept into its own little dish behind the block.
-function BoardPieces({id, k, need, done}) {
+function BoardPieces({id, k, need, done, lost = 0}) {
   if (id === 'greens') return <group position={HEAP}><GreensPieces n={done ? (need + 1) * 5 : k * 5} spread={.32} seed={2}/></group>;
   if (id === 'pumpkin') return <group position={HEAP}><PumpkinCubes n={done ? (need + 1) * 4 : k * 4} spread={.3} seed={2}/></group>;
-  if (id === 'pea') return <group position={HEAP}><Peas n={k * 4} spread={.24} seed={2}/></group>;
+  if (id === 'pea') return <group position={HEAP}><Peas n={Math.max(0, k * 4 - lost)} spread={.24} seed={2}/></group>;
+  if (id === 'taro') return <group position={HEAP}><TaroCubes n={done ? (need + 1) * 3 : k * 3} spread={.3} seed={2}/></group>;
+  if (id === 'bamboo') return <group position={HEAP}><BambooSlices n={done ? (need + 1) * 4 : k * 4} spread={.3} seed={2}/></group>;
+  if (id === 'wheat') return <group position={HEAP}><Noodles n={done ? need * 3 : k * 3} spread={.34} seed={2}/></group>;
   const n = done ? 8 : Math.min(8, k * 2);
   return <group>{WEDGE_SPOTS.slice(0, n).map((w, i) => <group key={i} position={w.at} rotation={[0, w.turn, 0]}><group rotation={[-Math.PI / 2, 0, 0]}><TomatoWedge/></group></group>)}</group>;
 }
@@ -149,11 +176,16 @@ function OpeningPod({index, k}) {
   });
   return <PeaPod open={open} washed/>;
 }
-function CutStep({id, look, dish, taps, onHint, onPhase, onDone}) {
+function CutStep({id, look, dish, taps, had = [], onHint, onPhase, onMishap, onDone}) {
   const invalidate = useThree(s => s.invalidate), info = INGREDIENTS[id], shell = info.prep === 'shell', need = shell ? info.pods : info.cuts;
   const knife = useRef(), whole = useRef(), pieces = useRef(), pods = useRef();
   const st = useRef({phase: 'ready', t0: performance.now(), k: 0}), seen = useRef(taps), [k, setK] = useState(0), [gone, setGone] = useState(false);
-  const say = left => onHint(shell ? (left > 1 ? `点一下，剥一个豆荚（还有 ${left} 个）` : '点一下，剥最后一个') : left > 1 ? `点一下，切一刀（还有 ${left} 刀）` : '点一下，最后一刀');
+  // Now and then (src/cooking-mishaps.js): one chop of a tomato makes it squirt, or a pea springs out of a pod.
+  const juiceAt = useMemo(() => id === 'tomato' && mayHappen('juice', had) ? whichTap(need) : 0, []);
+  const peaAt = useMemo(() => id === 'pea' && mayHappen('pea', had) ? whichPod(need) + 1 : 0, []);
+  const [squirt, setSquirt] = useState(null), [runaway, setRunaway] = useState(null);
+  const peaFrom = useMemo(() => {const [x, z] = POD_SPOTS[Math.max(0, peaAt - 1)] || [0, 0]; return [ON_BLOCK.pea[0] + x, BLOCK_H, ON_BLOCK.pea[2] + z];}, []);
+  const say = (left, lead = '') => onHint(lead + (shell ? (left > 1 ? `点一下，剥一个豆荚（还有 ${left} 个）` : '点一下，剥最后一个') : left > 1 ? `点一下，切一刀（还有 ${left} 刀）` : '点一下，最后一刀'));
   useEffect(() => {say(need);}, []);
   useEffect(() => {
     if (taps === seen.current) return; seen.current = taps;
@@ -174,10 +206,15 @@ function CutStep({id, look, dish, taps, onHint, onPhase, onDone}) {
     if (s.phase === 'chop') {
       // A pod opens over a third of a second; a chop is quicker.
       const hitAt = shell ? .18 : .09, end = shell ? .45 : .34;
-      if (t >= hitAt && !s.hit) {s.hit = true; s.k++; setK(s.k); buzz(14); play('wood', {volume: shell ? .3 : .6});}
+      if (t >= hitAt && !s.hit) {
+        s.hit = true; s.k++; setK(s.k); buzz(14); play('wood', {volume: shell ? .3 : .6});
+        if (s.k === juiceAt) {setSquirt(performance.now()); onMishap?.('juice'); s.lead = MISHAPS.juice.say + '。'; buzz([14, 40, 24]); play('squirt', {volume: .7});}
+        if (s.k === peaAt) {setRunaway(performance.now()); onMishap?.('pea'); s.lead = MISHAPS.pea.say + '。'; play('tap', {volume: .45});}
+      }
       if (t >= end) {
-        if (s.k >= need) {s.phase = 'done'; s.t0 = performance.now(); onHint(shell ? '剥好啦' : '切好啦');}
-        else {say(need - s.k); if (s.queued) {s.queued = false; s.phase = 'chop'; s.t0 = performance.now(); s.hit = false;} else s.phase = 'ready';}
+        const lead = s.lead || ''; s.lead = '';
+        if (s.k >= need) {s.phase = 'done'; s.t0 = performance.now(); onHint(lead + (shell ? '剥好啦' : '切好啦'));}
+        else {say(need - s.k, lead); if (s.queued) {s.queued = false; s.phase = 'chop'; s.t0 = performance.now(); s.hit = false;} else s.phase = 'ready';}
       }
     } else if (s.phase === 'done' && t >= .7) {s.phase = 'sweep'; s.t0 = performance.now(); onPhase('prep');}
     else if (s.phase === 'sweep') {
@@ -198,10 +235,12 @@ function CutStep({id, look, dish, taps, onHint, onPhase, onDone}) {
   if (gone) return null;
   return <group>
     {shell ? <group ref={pods} position={ON_BLOCK[id]}>{POD_SPOTS.map(([x, z, turn], i) => <group key={i} position={[x, 0, z]} rotation={[0, turn, 0]}><OpeningPod index={i} k={k}/></group>)}</group>
-      : <group ref={whole} position={ON_BLOCK[id]}><Raw id={id} washed/></group>}
+      : <group ref={whole} position={ON_BLOCK[id]}>{id === 'wheat' ? <DoughSheet/> : <Raw id={id} washed/>}</group>}
     {/* The pieces, held about where they lie so the whole pile can be swept up as one. */}
-    <group ref={pieces} position={center}><group position={center.map(v => -v)}><BoardPieces id={id} k={k} need={need} done={!shell && k >= need}/></group></group>
+    <group ref={pieces} position={center}><group position={center.map(v => -v)}><BoardPieces id={id} k={k} need={need} done={!shell && k >= need} lost={peaAt && k >= peaAt ? 1 : 0}/></group></group>
     {!shell && <group ref={knife} rotation={[0, id === 'greens' ? .25 : .15, 0]}><Cleaver look={look}/></group>}
+    {squirt && <JuiceSquirt from={ON_BLOCK.tomato} start={squirt}/>}
+    {runaway && <RunawayPea from={peaFrom} start={runaway}/>}
   </group>;
 }
 
@@ -234,12 +273,23 @@ function Smoke({level}) {
   });
   return <group ref={g} visible={level > 0}>{mats.map((m, i) => <mesh key={i} material={m}><sphereGeometry args={[.12, 12, 8]}/></mesh>)}</group>;
 }
-function CookStep({items, prep, look, taps, asks, onHint, onAdded, onDone}) {
+function CookStep({items, prep, look, taps, asks, had = [], onHint, onAdded, onMishap, onDone}) {
   const invalidate = useThree(s => s.invalidate);
   const wok = useRef(), food = useRef(), bowl = useRef(), bowlFill = useRef(), fly = useRef({});
-  const st = useRef({anim: null, lastIn: null, queue: []}), seenTaps = useRef(taps), seenAsks = useRef(asks.length);
+  const st = useRef({anim: null, lastIn: null, queue: [], had: [...had], hot: 0}), seenTaps = useRef(taps), seenAsks = useRef(asks.length);
   const [have, setHave] = useState({}), [seed, setSeed] = useState(1), [heat, setHeat] = useState('tender'), [smoke, setSmoke] = useState(0), [, setTick] = useState(0);
   const wokAt = useMemo(() => v3([S.wok[0], WOK_Y, S.wok[2]]), []);
+  // Now and then (src/cooking-mishaps.js): the first washed thing into the oil makes it spit, and one toss of the
+  // wok once something is cooking in it (the second, third or fourth) catches fire for a moment.
+  const flameOn = useMemo(() => mayHappen('flame', had) ? whichTap(4) : 0, []);
+  const [spit, setSpit] = useState(null), [flare, setFlare] = useState(null);
+  const toss = (s, now) => {
+    s.anim = {kind: 'toss', t0: now}; buzz(8);
+    if (s.lastIn) s.hot++;
+    if (flameOn && s.hot === flameOn && !s.had.includes('flame') && s.had.length < MISHAPS_MAX) {
+      s.had.push('flame'); setFlare(now); onMishap?.('flame'); onHint(MISHAPS.flame.say); buzz([20, 30, 40]); play('flare', {volume: .8});
+    }
+  };
   useEffect(() => {onHint('先点「倒油」，倒一点油');}, []);
   // What the card asks for (oil, a thing to go in, spring onion or garlic, off the fire) is done one after another.
   useEffect(() => {
@@ -252,7 +302,7 @@ function CookStep({items, prep, look, taps, asks, onHint, onAdded, onDone}) {
     if (taps === seenTaps.current) return; seenTaps.current = taps;
     const s = st.current; if (!s.oiled) return;
     if (s.anim) {if (s.anim.kind === 'toss') s.pendingToss = Math.min(2, (s.pendingToss || 0) + 1); return;}
-    s.anim = {kind: 'toss', t0: performance.now()}; buzz(8); invalidate();
+    toss(s, performance.now()); invalidate();
   }, [taps]);
   const start = (s, what) => {
     const now = performance.now();
@@ -262,7 +312,7 @@ function CookStep({items, prep, look, taps, asks, onHint, onAdded, onDone}) {
   useFrame(() => {
     const s = st.current, now = performance.now();
     if (!s.anim && s.queue.length) start(s, s.queue.shift());
-    if (!s.anim && s.pendingToss > 0) {s.pendingToss--; s.anim = {kind: 'toss', t0: now}; buzz(8);}
+    if (!s.anim && s.pendingToss > 0) {s.pendingToss--; toss(s, now);}
     const a = s.anim;
     // How long it has been on the fire since the last thing went in, and what that is doing to it.
     if (s.lastIn) {
@@ -295,8 +345,14 @@ function CookStep({items, prep, look, taps, asks, onHint, onAdded, onDone}) {
         // Over, not through, the rim: across quickly, up high, and down into the wok from above.
         const p = fly.current[a.kind], from = PREP[prep[a.kind]], k = Math.min(1, Math.max(0, t / .7));
         if (p) {const x = easeOut(k); p.position.set((wokAt.x - from[0]) * x, .05 + (PAN - .05) * k + Math.sin(k * Math.PI) * 1.5, (wokAt.z - from[2]) * x); p.visible = k < 1;}
-        if (t >= .25 && !a.landed) {a.landed = true; buzz(10);}
-        if (t >= .72 && !a.added) {a.added = true; s.lastIn = now; setHave(h => ({...h, [a.kind]: now})); onAdded(a.kind);}
+        if (t >= .25 && !a.landed) {
+          a.landed = true; buzz(10);
+          if (isVeg(a.kind) && !s.spitRolled) {
+            s.spitRolled = true;
+            if (mayHappen('splatter', s.had)) {s.had.push('splatter'); a.spat = true; setSpit(now); onMishap?.('splatter'); buzz([10, 30, 18]); play('sizzle', {volume: .7});}
+          }
+        }
+        if (t >= .72 && !a.added) {a.added = true; s.lastIn = now; setHave(h => ({...h, [a.kind]: now})); onAdded(a.kind, a.spat ? 'splatter' : null);}
         if (t >= .9) s.anim = null;
       } else if (a.kind === 'off') {
         if (t >= .5 && !a.told) {a.told = true; onDone({heat: s.heat});}
@@ -327,9 +383,12 @@ function CookStep({items, prep, look, taps, asks, onHint, onAdded, onDone}) {
         {mains.map(id => <Cooked key={id} id={id} heat={heat} n={Math.max(3, Math.round(PIECES[id] * share))} spread={.5} seed={FOOD_SEEDS[id] + seed} set={id === 'egg' ? eggSet : 1} soft={id === 'egg' ? 1 : Math.min(1, .2 + .2 * (seed - 1))}/>)}
         {have.garlic && <Garlic n={7} spread={.35} seed={seed}/>}
         {have.scallion && <Scallion/>}
+        <ExtraBits extras={['honey', 'walnut', 'pinenut'].filter(e => have[e])} spread={.4}/>
       </group>
       <group position={[.62, .34, .32]} rotation={[-.7, .5, -.35]}><Turner look={look}/></group>
       <Smoke level={smoke}/>
+      {spit && <OilSpit start={spit}/>}
+      {flare && <WokFlame start={flare}/>}
     </group>
   </group>;
 }
@@ -403,70 +462,95 @@ function PlateStep({made, look, onHint, onDone}) {
 }
 
 // ---- what stands on the counter, as far as the cooking has got ----
-function Counter({look, items, prep, step, stepIndex, steps, tapOn, lit, made}) {
-  const kind = step.split(':')[0], cooking = kind === 'cook' || kind === 'plate', egg = items.includes('egg');
+function Counter({look, items, prep, step, stepIndex, steps, tapOn, lit, made, method = 'wok'}) {
+  const kind = step.split(':')[0], pot = method === 'pot', cooking = kind === 'cook' || kind === 'plate', egg = items.includes('egg');
   const doneWith = id => {const i = steps.findIndex(([s]) => s === id); return i >= 0 && i < stepIndex;};
   const inWok = id => made.items.includes(id);
+  // At the wok or the pot, the step itself draws what is waiting to go in.
+  const busy = kind === 'cook' || kind === 'boil';
+  // The pot's lid comes off when the water goes in.
+  const waterAt = steps.findIndex(([s]) => s === 'water'), opened = pot && waterAt >= 0 && stepIndex >= waterAt;
   return <group>
     <Worktop look={look}/>
     <group position={S.basin}><WashBasin look={look}/></group>
     <group position={S.tap}><Tap look={look} on={tapOn}/></group>
     <group position={S.block}><ChoppingBlock look={look}/></group>
+    {/* Where a tomato squirted, the splashes stay on the block. */}
+    {made.mishaps?.includes('juice') && step !== 'cut:tomato' && <JuiceSpots from={ON_BLOCK.tomato}/>}
     {/* The cleaver at rest across the back of the block, its handle out over the right edge. */}
     {kind !== 'cut' && <group position={[S.block[0], BLOCK_H + .012, S.block[2] - .6]}><group rotation={[-Math.PI / 2, 0, 0]}><Cleaver look={look}/></group></group>}
     {/* A dish behind the block for each thing to cut, and in it, once it's cut and until it goes in the wok, the pieces. */}
     {items.filter(isVeg).map(id => <group key={id} position={PREP[prep[id]]}>
       <PrepDish/>
-      {(doneWith(`cut:${id}`) || doneWith(`shell:${id}`)) && kind !== 'cook' && !inWok(id) && <group position={[0, .05, 0]}><Prepped id={id} seed={FOOD_SEEDS[id]}/></group>}
+      {(doneWith(`cut:${id}`) || doneWith(`shell:${id}`) || doneWith(`rinse:${id}`)) && !busy && !inWok(id) && <group position={[0, .05, 0]}><Prepped id={id} seed={FOOD_SEEDS[id]}/></group>}
     </group>)}
+    {/* Rinsed rice waits in its own bowl in the next place along, and the bowl stays once the rice is in the pot. */}
+    {items.includes('rice') && doneWith('rinse:rice') && !busy && <group position={PREP[prep.rice]}><RiceBowl washed empty={inWok('rice')}/></group>}
     {/* The eggs' bowl: empty, then beaten egg waiting, then empty once it has gone into the wok. */}
-    {egg && kind !== 'egg' && kind !== 'whisk' && kind !== 'cook' && <group position={S.bowl} scale={BOWL_SCALE}><Bowl/>
+    {/* For tea eggs the eggs wait whole in the bowl. */}
+    {egg && teaEggs(items, method) && !busy && !inWok('egg') && <group position={S.bowl}>{[-.13, .13].map((x, i) => <group key={x} position={[x, .22, 0]} rotation={[0, i ? .3 : -.2, Math.PI / 2]} scale={1.2}><Egg brown={i === 1}/></group>)}</group>}
+    {egg && kind !== 'egg' && kind !== 'whisk' && !busy && <group position={S.bowl} scale={BOWL_SCALE}><Bowl/>
       {doneWith('whisk') && !inWok('egg') && <mesh position={[0, BEATEN_LEVEL, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={bowlRadiusAt(BEATEN_LEVEL) - .012}><circleGeometry args={[1, 40]}/><meshStandardMaterial color={BEATEN} roughness={.32}/></mesh>}
     </group>}
     <group position={S.shelf}><OilAndSalt look={look}/></group>
-    <Hob look={look} lit={[lit, 0]}/>
-    {S.knobs.map(([x, z], i) => <group key={i} position={[x, .07, z]}><Knob look={look} turned={i === 0 ? lit : 0}/></group>)}
+    <Hob look={look} lit={pot ? [0, lit] : [lit, 0]}/>
+    {S.knobs.map(([x, z], i) => <group key={i} position={[x, .07, z]}><Knob look={look} turned={i === (pot ? 1 : 0) ? lit : 0}/></group>)}
     {!cooking && <group position={[S.wok[0], WOK_Y, S.wok[2]]}><Wok look={look}/></group>}
-    <group position={[S.pot[0], .07 + BURNER_TOP * .72 - .01, S.pot[2]]} scale={.8}><Pot look={look}/></group>
-    {kind === 'done' ? <group position={S.plate}><DishModel item={made} look={look}/></group> : <group position={S.plate}><Plate look={look}/></group>}
+    <group position={POT_AT} scale={POT_SCALE}><Pot look={look} lid={!opened}/>{pot && made.mishaps?.includes('boilover') && kind !== 'boil' && <FoamStain/>}</group>
+    {kind === 'done' ? <group position={S.plate}><ServedDish item={made} look={look}/></group> : <group position={S.plate}>{pot ? <SoupBowl look={look}/> : <Plate look={look}/>}</group>}
   </group>;
 }
 
 // ---- the steps, in the stage and the card ----
 // items: what was put on the counter, in the order it was put there. The dish keeps what went into the wok in the
 // order it went in (so tomato then greens is 番茄炒青菜).
-export function CookingSteps({items, look = 'cream', onDone, onQuit}) {
-  const steps = useMemo(() => stepsFor(items), []), prep = useMemo(() => Object.fromEntries(items.filter(isVeg).map((id, i) => [id, i])), []);
+// method: 'wok' (stir-fried on the left ring) or 'pot' (simmered in the little pot on the right, src/cooking-pot-steps.jsx).
+// extrasOk: what can be thrown in from the stock (spring onion and garlic always; honey and nuts once brought home).
+export function CookingSteps({items, method = 'wok', look = 'cream', extrasOk = ['scallion', 'garlic'], onDone, onQuit}) {
+  const pot = method === 'pot';
+  const steps = useMemo(() => stepsFor(items, method), []), prep = useMemo(() => Object.fromEntries(items.filter(id => isVeg(id) || id === 'rice').map((id, i) => [id, i])), []);
   const [index, setIndex] = useState(0), [hint, setHint] = useState(''), [taps, setTaps] = useState(0), [phase, setPhase] = useState(null);
-  const [made, setMade] = useState({items: [], extras: [], heat: 'just', cuts: {}, yolks: 0}), [tapOn, setTapOn] = useState(false), [lit, setLit] = useState(0);
+  const [made, setMade] = useState({items: [], extras: [], heat: 'just', cuts: {}, yolks: 0, mishaps: [], method}), [tapOn, setTapOn] = useState(false), [lit, setLit] = useState(0);
+  // What went its own way so far, in the order it happened (src/cooking-mishaps.js).
+  const happened = what => setMade(m => m.mishaps.includes(what) ? m : {...m, mishaps: [...m.mishaps, what]});
+  const kept = () => mishapsFor(made.mishaps, made.items, method);
   // At the wok: what the card has asked for so far, and what has gone in.
   const [asks, setAsks] = useState([]), [added, setAdded] = useState([]);
   const finished = index >= steps.length, step = finished ? 'done' : steps[index][0], kind = step.split(':')[0], id = step.split(':')[1];
   const next = patch => {setMade(m => ({...m, ...(typeof patch === 'function' ? patch(m) : patch)})); setPhase(null); setIndex(i => i + 1);};
-  useEffect(() => {if (finished) setHint(`做好啦！${HEAT_WORDS[made.heat]}。`);}, [finished]);
+  useEffect(() => {if (finished) setHint(`做好啦！${[heatWords(made), ...mishapWords(kept())].join('，')}。`);}, [finished]);
   const tap = () => setTaps(n => n + 1);
   const ask = what => setAsks(a => a.includes(what) ? a : [...a, what]);
   const asked = what => asks.includes(what);
-  const oiled = added.includes('oil'), anything = items.some(i => asks.includes(i));
-  const onAdded = what => {
+  const oiled = added.includes('oil'), boiled = added.includes('boil'), anything = items.some(i => asks.includes(i));
+  const onAdded = (what, mishap) => {
     setAdded(a => [...a, what]);
+    // The pot says for itself what to do next.
+    if (pot) return;
     if (what === 'oil') setHint('点下面的菜下锅，想先下哪样就先下哪样');
-    else if (INGREDIENTS[what]) setHint('点锅翻一翻；都下好了，觉得行了就点「起锅」');
+    else if (INGREDIENTS[what]) setHint((mishap ? MISHAPS[mishap].say + '。' : '') + '点锅翻一翻；都下好了，觉得行了就点「起锅」');
   };
   return <div className="atelier-top dessert-cooking cooking-steps">
     <div className="atelier-stage bench-stage dessert-stage dessert-cook-stage cooking-stage" tabIndex={0} aria-label={hint} onPointerDown={e => {if (e.button > 0) return; tap();}} onKeyDown={e => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault(); tap();}}}>
       <div className="atelier-wall"/>
       <QuietCanvas orthographic shadows camera={{position: [0, 9, 18], zoom: 100, near: .1, far: 200}} dpr={[1, 1.5]}>
-        <StepCamera step={step + (phase || '')} shot={shotOf(step, phase)}/>
+        <StepCamera step={step + (phase || '')} shot={shotOf(step, phase, method)}/>
         <ambientLight intensity={1.05}/><hemisphereLight args={['#fff8e9', '#c3ac9b', .85]}/>
         <directionalLight position={[-5, 10, 7]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-.0004} shadow-normalBias={.02} shadow-camera-left={-9} shadow-camera-right={9} shadow-camera-top={7} shadow-camera-bottom={-7}/>
-        <Counter look={look} items={items} prep={prep} step={step} stepIndex={index} steps={steps} tapOn={tapOn} lit={lit} made={made}/>
+        <Counter look={look} items={items} prep={prep} step={step} stepIndex={index} steps={steps} tapOn={tapOn} lit={lit} made={made} method={method}/>
         {kind === 'wash' && <WashStep key={step} id={id} taps={taps} onHint={setHint} onTap={setTapOn} onDone={() => next({})}/>}
-        {(kind === 'cut' || kind === 'shell') && <CutStep key={step} id={id} dish={prep[id]} look={look} taps={taps} onHint={setHint} onPhase={setPhase} onDone={r => next(m => kind === 'cut' ? {cuts: {...m.cuts, [id]: r.cuts}} : {})}/>}
+        {kind === 'rinse' && <WashStep key={step} id={id} to={PREP[prep[id]]} taps={taps} onHint={setHint} onTap={setTapOn} onDone={() => next({})}/>}
+        {kind === 'knead' && <KneadStep key={step} taps={taps} onHint={setHint} onDone={() => next({})}/>}
+        {kind === 'roll' && <RollStep key={step} taps={taps} look={look} onHint={setHint} onDone={() => next({})}/>}
+        {kind === 'water' && <WaterStep key={step} taps={taps} onHint={setHint} onDone={() => next({})}/>}
+        {kind === 'boil' && <BoilStep key={step} items={items} prepAt={i => PREP[prep[i]]} look={look} taps={taps} asks={asks} had={made.mishaps} onHint={setHint} onAdded={onAdded} onMishap={happened}
+          onDone={r => {setLit(0); next({heat: r.heat, items: asks.filter(i => items.includes(i)), extras: Object.keys(EXTRAS).filter(e => asks.includes(e))});}}/>}
+        {kind === 'serve' && <ServeStep key={step} made={made} look={look} onHint={setHint} onDone={() => next({})}/>}
+        {(kind === 'cut' || kind === 'shell') && <CutStep key={step} id={id} dish={prep[id]} look={look} taps={taps} had={made.mishaps} onHint={setHint} onPhase={setPhase} onMishap={happened} onDone={r => next(m => kind === 'cut' ? {cuts: {...m.cuts, [id]: r.cuts}} : {})}/>}
         {kind === 'egg' && <group position={S.bowl} scale={BOWL_SCALE}><EggStep d={EGG_D} taps={taps} onHint={setHint} onDone={r => next({yolks: r.yolks})}/></group>}
         {kind === 'whisk' && <group position={S.bowl} scale={BOWL_SCALE}><WhiskStep d={EGG_D} yolks={made.yolks} onHint={setHint} onDone={() => next({})}/></group>}
         {kind === 'fire' && <FireStep taps={taps} onHint={setHint} onLight={() => setLit(1)} onDone={() => next({})}/>}
-        {kind === 'cook' && <CookStep items={items} prep={prep} look={look} taps={taps} asks={asks} onHint={setHint} onAdded={onAdded}
+        {kind === 'cook' && <CookStep items={items} prep={prep} look={look} taps={taps} asks={asks} had={made.mishaps} onHint={setHint} onAdded={onAdded} onMishap={happened}
           onDone={r => {setLit(0); next({heat: r.heat, items: asks.filter(i => items.includes(i)), extras: Object.keys(EXTRAS).filter(e => asks.includes(e))});}}/>}
         {kind === 'plate' && <PlateStep made={made} look={look} onHint={setHint} onDone={() => next({})}/>}
       </QuietCanvas>
@@ -478,11 +562,16 @@ export function CookingSteps({items, look = 'cream', onDone, onQuit}) {
       {kind === 'cook' && <div className="cooking-asks">
         {!asked('oil') ? <button className="cooking-oil" onClick={() => ask('oil')}>倒油</button> : <>
           {items.map(i => <button key={i} disabled={!oiled || asked(i)} onClick={() => ask(i)}>{asked(i) ? `${INGREDIENTS[i].name}下锅了` : i === 'egg' ? '倒蛋液' : `下${INGREDIENTS[i].name}`}</button>)}
-          {Object.entries(EXTRAS).map(([e, label]) => <button key={e} className="cooking-extra" disabled={!oiled || asked(e)} onClick={() => ask(e)}>{asked(e) ? `${label}下了` : `撒${label}`}</button>)}
+          {Object.entries(EXTRAS).filter(([e]) => extrasOk.includes(e)).map(([e, label]) => <button key={e} className="cooking-extra" disabled={!oiled || asked(e)} onClick={() => ask(e)}>{asked(e) ? `${label}${extraVerb(e) === '淋' ? '淋好了' : '下了'}` : `${extraVerb(e)}${label}`}</button>)}
           <button className="cooking-ready" disabled={!anything || asked('ready')} onClick={() => ask('ready')}>起锅</button>
         </>}
       </div>}
-      {finished ? <button className="atelier-save" onClick={() => onDone({items: made.items, extras: made.extras, heat: made.heat, cuts: made.cuts})}>好了，起个名字</button> : <div className="dessert-step-actions">
+      {kind === 'boil' && <div className="cooking-asks">
+        {items.map(i => <button key={i} disabled={!boiled || asked(i)} onClick={() => ask(i)}>{asked(i) ? (i === 'egg' && !teaEggs(items, method) ? '蛋液淋好了' : `${INGREDIENTS[i].name}下锅了`) : i === 'egg' ? (teaEggs(items, method) ? '下鸡蛋' : '淋蛋液') : `下${INGREDIENTS[i].name}`}</button>)}
+        {Object.entries(EXTRAS).filter(([e]) => e !== 'garlic' && extrasOk.includes(e)).map(([e, label]) => <button key={e} className="cooking-extra" disabled={!boiled || asked(e)} onClick={() => ask(e)}>{asked(e) ? `${label}${extraVerb(e) === '淋' ? '淋好了' : '下了'}` : `${extraVerb(e)}${label}`}</button>)}
+        <button className="cooking-ready" disabled={!anything || asked('ready')} onClick={() => ask('ready')}>盛出来</button>
+      </div>}
+      {finished ? <button className="atelier-save" onClick={() => onDone({items: made.items, extras: made.extras, heat: made.heat, cuts: made.cuts, mishaps: kept(), method})}>好了，起个名字</button> : <div className="dessert-step-actions">
         <button className="dessert-step-quit" onClick={onQuit}>不做了</button>
       </div>}
     </aside>

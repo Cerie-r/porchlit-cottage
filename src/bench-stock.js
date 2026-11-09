@@ -31,7 +31,12 @@ export const ESSENCES = {
 export const FRUITS = {strawberry: [['wild-strawberry'], 1], blueberry: [['blueberry'], 1], cherry: [['cherries'], 1]};
 export const NOTIONS = {lace: [['dew-web'], 2], pearl: [['pearl'], 1]};
 // What the stove cooks with. A pumpkin is good for a dye and for a pot of porridge both, counted for each.
-export const PRODUCE = {tomato: [['tomato'], 1], greens: [['greens'], 1], pea: [['pea-pod'], 1], pumpkin: [['pumpkin'], 1]};
+export const PRODUCE = {tomato: [['tomato'], 1], greens: [['greens'], 1], pea: [['pea-pod'], 1], pumpkin: [['pumpkin'], 1],
+  // From the fields, the tea hill and the woods: a taro, a length of bamboo (its shoot), an ear of wheat (a bowl of
+  // noodles) are one dish each; a sprig of tea two pots; a piece of honeycomb three drizzles; walnuts and a pine cone
+  // two handfuls each.
+  taro: [['taro'], 1], bamboo: [['bamboo'], 1], wheat: [['wheat-ear'], 1], tea: [['tea-sprig'], 2],
+  honey: [['honeycomb'], 3], walnut: [['walnut'], 2], pinenut: [['pinecone'], 2]};
 // The kitchen opens with a little in the fridge: two tomatoes and a head of greens, given once. After those it all
 // comes in from going out.
 export const STARTER = {produce: {tomato: 2, greens: 1}};
@@ -124,7 +129,10 @@ export function costOf(thing, {own = new Set()} = {}) {
   if (thing.kind === 'dish') for (const name of produceOf(thing)) add(cost, 'produce', name);
   return cost;
 }
-const NAMES = {essence: {blush: '樱花', rose: '玫瑰', lilac: '芋泥', sage: '抹茶', mist: '海盐', wood: '焦糖', ink: '巧克力', gold: '蜂蜜'}, fruit: {strawberry: '草莓', blueberry: '蓝莓', cherry: '樱桃'}, notion: {lace: '蕾丝', pearl: '珍珠扣'}, produce: {tomato: '番茄', greens: '青菜', pea: '豌豆', pumpkin: '南瓜'}};
+const NAMES = {essence: {blush: '樱花', rose: '玫瑰', lilac: '芋泥', sage: '抹茶', mist: '海盐', wood: '焦糖', ink: '巧克力', gold: '蜂蜜'}, fruit: {strawberry: '草莓', blueberry: '蓝莓', cherry: '樱桃'}, notion: {lace: '蕾丝', pearl: '珍珠扣'}, produce: {tomato: '番茄', greens: '青菜', pea: '豌豆', pumpkin: '南瓜', taro: '芋头', bamboo: '笋', wheat: '麦子', tea: '茶叶', honey: '蜂蜜', walnut: '核桃', pinenut: '松子'}};
+// Where going out finds what the stove cooks with, for when it has run out.
+export const PRODUCE_WHERE = {bamboo: '茶山上', tea: '茶山上', honey: '林子里', pinenut: '林子里', walnut: '林子深处'};
+const whereFor = name => PRODUCE_WHERE[name] || '田里';
 // What it's called on a bench: a colour by its name, an essence by its flavour, fruit and notions by their names.
 export const stockName = (kind, name) => (kind === 'dye' ? name : NAMES[kind]?.[name] || name);
 // Where the notions are found, for when there are none or too few.
@@ -142,7 +150,7 @@ export function short(stock, cost) {
       const words = kind === 'notion'
         ? (!shown(stock, kind, name) ? `还没有${what}。${NOTION_HINT[name]}。` : have >= 1 ? `${what}不够了。${NOTION_HINT[name]}。` : `${what}用完了。${NOTION_HINT[name]}。`)
         : kind === 'produce'
-          ? (!shown(stock, kind, name) ? `还没有${what}，出门去田里找一找。` : `${what}用完了，出门再去田里找一些。`)
+          ? (!shown(stock, kind, name) ? `还没有${what}，出门去${whereFor(name)}找一找。` : `${what}用完了，出门再去${whereFor(name)}找一些。`)
         : !shown(stock, kind, name)
           ? (kind === 'dye' ? `还没有「${what}」的染料，出门找一找。` : kind === 'essence' ? `还没有「${what}」的香精，出门找一找。` : `还没有${what}，出门捡一捧回来。`)
           : (kind === 'dye' ? `「${what}」的染料用完了，出门再找一些。` : kind === 'essence' ? `「${what}」的香精用完了，出门再找一些。` : `${what}用完了，出门再捡一捧。`);

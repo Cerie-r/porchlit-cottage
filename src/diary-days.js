@@ -35,7 +35,7 @@ function madeLine(item) {
   if (item.kind === 'bouquet') return `插了一瓶花${named(item.name, '我的一瓶花')}`;
   if (item.kind === 'build') return `拼好了${named(item.name, '') || '一件拼搭'}`;
   if (item.kind === 'dessert') return `做了一份${item.name?.trim() || '甜品'}`;
-  if (item.kind === 'dish') return `做了一盘${item.name?.trim() || '菜'}`;
+  if (item.kind === 'dish') return item.method === 'pot' ? `煮了一锅${item.name?.trim() || '汤'}` : `做了一盘${item.name?.trim() || '菜'}`;
   return null;
 }
 
@@ -83,7 +83,7 @@ export function diaryDays(state = {}, {him = '他', today = null} = {}) {
   for (const e of Array.isArray(state.dessertBook) ? state.dessertBook : []) {
     const dish = validDish(e?.recipe);
     if (!validDessert(e?.recipe) && !dish) continue;
-    if (e.by?.kind === 'self' && isDay(e.madeOn)) add(e.madeOn, 'made', `做了${dish ? '一盘' : '一份'}${e.recipe.name}`);
+    if (e.by?.kind === 'self' && isDay(e.madeOn)) add(e.madeOn, 'made', !dish ? `做了一份${e.recipe.name}` : e.recipe.method === 'pot' ? `煮了一锅${e.recipe.name}` : `做了一盘${e.recipe.name}`);
     add(e.eatenOn, 'meal', `和${him}一起吃了${e.recipe.name}${e.by?.kind === 'self' ? '' : `，${makerLabel(e.by)}`}`);
   }
   for (const r of Array.isArray(state.dessertRecipes) ? state.dessertRecipes : []) if (validDessert(r?.recipe)) add(r.learnedOn, 'learn', `跟${inLine(r.from)}学会了${r.recipe.name}`);

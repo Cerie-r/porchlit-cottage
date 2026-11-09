@@ -16,6 +16,7 @@ import {residentsOf} from './residents.mjs';
 import {DAILY_MAX, WAITING_MAX, actsOf, savedCloset, seeksLeft} from './acts.mjs';
 import {COLORS, DOLL_LABELS, POSES, benchOf} from '../src/machine-make.js';
 import {stockName} from '../src/bench-stock.js';
+import {EXTRAS, EXTRA_PRODUCE, INGREDIENTS, ITEMS_MAX, extraVerb} from '../src/cooking-recipe.js';
 import {flowerKinds, vaseKinds} from '../src/flower-kinds.js';
 import {DESSERT_LABELS, DESSERT_OPTIONS} from '../src/dessert-recipe.js';
 import {ROLES} from '../src/brick-recipe.js';
@@ -27,7 +28,7 @@ import {decorLook} from '../src/machine-decor.js';
 import {thrownBy, throwWait} from './bottles.mjs';
 
 const PORCH = {on: '灯亮着（邻居能敲门、放东西）', dim: '留了一盏小灯（只能看）', dnd: '请勿打扰', off: '熄灯落锁'};
-const KINDS = {animal: '玩偶', bouquet: '花', build: '拼搭', dessert: '甜品', note: '纸条', photo: '相纸', keepsake: '家里的玩具'};
+const KINDS = {animal: '玩偶', bouquet: '花', build: '拼搭', dessert: '甜品', dish: '菜', note: '纸条', photo: '相纸', keepsake: '家里的玩具'};
 const plain = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const nameOf = ({name, nickname}) => nickname ? `${nickname}（${name}）` : name;
 // A name after punctuation or a date, going on in Chinese: a space after it only where it ends in a letter or digit.
@@ -219,7 +220,7 @@ export async function lookGuide(db, {homeId}) {
     '二、先看，再动',
     `· 每次来先 look（summary）：家里现在什么样，${her}最近做了什么，门口有没有东西，你上次排的事接进去没有。`,
     '· 动手前看对应那一样：挪家具看 rooms，藏东西看 spots 和 backpack，换衣服看 wardrobe，做东西看 bench，布置看 decor。',
-    `· 你只能用这个家已经有的：扭到的衣服和发型、台子上有的花和颜色、抓到的玩偶。${her}没有的，你也用不了。`,
+    `· 你只能用这个家已经有的：扭到的衣服和发型、台子上有的花和颜色、抓到的玩偶、冰箱里出门捡回来的菜。${her}没有的，你也用不了。`,
     '',
     '三、能做的事',
     `· 藏东西让${her}找（place 的 hide），可以写一两句提示。同时最多藏 ${LIMITS.hidden} 样${her}还没找到的，藏起来的信也算。`,
@@ -228,7 +229,7 @@ export async function lookGuide(db, {homeId}) {
     '· 写（write）：一封信、一张电脑便签，或者往海里投一只漂流瓶（一天一只，不署名，漂到别人家）。',
     `· 动小人（together）：抱一下、偷亲、摸头、捏脸、牵着走、叫${her}坐你腿上，等${her}在屋里、你没在躲的时候演，还没演的最多 ${LIMITS.scenes} 件。靠着、看电视、跳舞、一起睡，要等${her}到了对的地方（楼下客厅、留声机响着、卧室）。偷亲也算进玫瑰城堡的九十九下。`,
     `· 换衣服（dress）：给${her}或给你自己换。`,
-    `· 做东西（make）：一束花、一份甜品、一只玩偶，送进${her}的背包、摆在茶几上，或者藏起来。`,
+    `· 做东西（make）：一束花、一份甜品、一只玩偶，送进${her}的背包、摆在茶几上，或者藏起来。也能下厨（dish）：在灶台上炒一盘、煮一锅，放进餐桌的玻璃罩里等${her}来一起吃。`,
     '· 布置（decorate）：墙纸地板、家具颜色、灯、房子外观。',
     `· 一起出门（outing 的 go）：回${her}一声「走」。${her}到门口点「走」，两个人一起去《出门记》里走走，一天最多 ${TRIPS_A_DAY} 趟。`,
     '',
@@ -404,6 +405,19 @@ export async function lookBench(db, {homeId}) {
     `  染料（玩偶的颜色；奶白、米白、墨黑和每种玩偶本来的颜色不用染料）：${have('dye')}`,
     `  香精（甜品的颜色就是口味；香草 cream、牛奶 white 一直有，底用 gold 是蛋香，也一直有）：${have('essence')}`,
     `  水果（一捧做一份）：${have('fruit')}`
+  );
+  // The stove (a dish): what is in the fridge, brought home from going out and used up a find a dish, and what the
+  // kitchen always has. Only what has been brought home at least once is told.
+  const produce = b.stock.produce, inFridge = id => produce[INGREDIENTS[id].produce];
+  const fridge = Object.keys(INGREDIENTS).filter(id => !INGREDIENTS[id].staple && inFridge(id)).map(id => `[${id}] ${INGREDIENTS[id].name}（${inFridge(id).left ? `还够 ${inFridge(id).left} 道` : '用完了'}）`);
+  const toppings = Object.keys(EXTRAS).filter(id => EXTRA_PRODUCE[id] && produce[EXTRA_PRODUCE[id]]).map(id => `[${id}] ${EXTRAS[id]}（${produce[EXTRA_PRODUCE[id]].left ? `还能${extraVerb(id)} ${produce[EXTRA_PRODUCE[id]].left} 次` : '用完了'}）`);
+  lines.push(
+    `厨房（dish）：左边的炒锅 [wok] 炒一盘，右边的小锅 [pot] 煮一锅（汤、粥、面）；米${inFridge('tea') ? '和茶叶' : ''}只能下小锅。一道菜最多 ${ITEMS_MAX} 样，items 按下锅的先后写。`,
+    `  冰箱里（出门捡回来的，做好了才扣；用完了、还没有的，要两个人再出门找）：${fridge.join('、') || '还空着'}`,
+    `  一直有的：${Object.keys(INGREDIENTS).filter(id => INGREDIENTS[id].staple).map(id => `[${id}] ${INGREDIENTS[id].name}`).join('、')}`,
+    `  撒在上面、淋在上面的（extras）：${[...Object.keys(EXTRAS).filter(id => !EXTRA_PRODUCE[id]).map(id => `[${id}] ${EXTRAS[id]}`), ...toppings].join('、')}`,
+    '  火候（heat，不写就是正好）：[tender] 早点起锅、[just] 正好、[browned] 多一会儿、[caught] 再久一点（锅底会糊一点）',
+    '  名字不写就照下锅的东西起（番茄炒蛋、白粥……）。做好了可以放进餐桌的玻璃罩里（spot 填 dome），两个人坐下来一起吃。'
   );
   return lines.join('\n');
 }

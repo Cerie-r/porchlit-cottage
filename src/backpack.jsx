@@ -11,7 +11,7 @@ import {PictureStudio} from './picture-studio.jsx';
 import {cachedPictures} from './brick-pictures.js';
 import {partCount} from './brick-recipe.js';
 import {DESSERT_LABELS, makerLabel, dayLabel} from './dessert-recipe.js';
-import {HEAT_WORDS, heatOf} from './cooking-recipe.js';
+import {heatWords} from './cooking-recipe.js';
 import {normalizeAnimal} from './animal-state.js';
 import {speciesName} from './album.js';
 import {leading} from './words.js';
@@ -83,10 +83,10 @@ function PantryPage({pantry, onCook}) {
     {!pantry.length && <p>还没有食材。出门去田里，番茄架、青菜地、小推车里都能找到。</p>}
     {pantry.map(p => <div key={p.id} className="bag-pantry-row">
       <img src={p.art} alt="" draggable={false}/>
-      <div><strong>{p.name}</strong><small>{p.left ? `还有 ${p.left} 份` : '用完了，出门再去田里找'}</small></div>
+      <div><strong>{p.name}</strong><small>{p.left ? `还有 ${p.left} 份` : `用完了，出门再去${p.where || '田里'}找`}</small></div>
       {onCook && <button disabled={!p.left} onClick={() => onCook(p.id)}>拿去做饭</button>}
     </div>)}
-    <p className="bag-pantry-note">鸡蛋、葱、蒜、油、盐厨房里一直有。</p>
+    <p className="bag-pantry-note">鸡蛋、米、葱、蒜、油、盐厨房里一直有。</p>
   </div>;
 }
 
@@ -100,7 +100,7 @@ function describe(item) {
   if (item.kind === 'bouquet') return `${item.stems.length} 枝花 · 自选搭配`;
   if (item.kind === 'build') return `${partCount(item)} 块积木 · 拼搭`;
   if (item.kind === 'dessert') return `${DESSERT_LABELS.base[item.base] || '甜品'} · ${makerLabel(item.by)}`;
-  if (item.kind === 'dish') return `${HEAT_WORDS[heatOf(item)]} · ${makerLabel(item.by)}`;
+  if (item.kind === 'dish') return `${heatWords(item)} · ${makerLabel(item.by)}`;
   return `${item.bricks.length} 片积木`;
 }
 function ItemsPage({items, focusId, onRead, onPlace, onDome, onMove, onShift, onTurn, onReportBottle, onDrop}) {

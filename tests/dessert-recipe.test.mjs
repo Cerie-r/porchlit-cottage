@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {ROLES} from '../src/brick-recipe.js';
-import {DESSERT_OPTIONS,DESSERT_LABELS,DESSERT_TONES,toneLabel,freshDessert,normalizeDessert,dessertProblems,validDessert,dessertRecipe,sameDessert,makerLabel,learnedLabel,localDay,dayLabel,isDay,dessertStarters,NAME_MAX,NOTE_MAX,BAKES,BAKE_WORDS,bakeOf,HAND_MAX,handOf,BASIC_BASES,availableBases,burstOf,PUFFS} from '../src/dessert-recipe.js';
+import {DESSERT_OPTIONS,DESSERT_LABELS,DESSERT_TONES,toneLabel,freshDessert,normalizeDessert,dessertProblems,validDessert,dessertRecipe,sameDessert,makerLabel,tagNote,learnedLabel,localDay,dayLabel,isDay,dessertStarters,NAME_MAX,NOTE_MAX,BAKES,BAKE_WORDS,bakeOf,HAND_MAX,handOf,BASIC_BASES,availableBases,burstOf,PUFFS} from '../src/dessert-recipe.js';
 
 // A fresh dessert and every starter are proper recipes.
 assert.deepEqual(dessertProblems(freshDessert()),[],'a fresh dessert is fine');
@@ -72,6 +72,9 @@ assert.ok(!sameDessert(freshDessert(),{...freshDessert(),c:{...freshDessert().c,
 // The tag's words.
 assert.equal(makerLabel(undefined),'自己做的');assert.equal(makerLabel({kind:'self'}),'自己做的');
 assert.equal(makerLabel({kind:'machine',name:'Birch'}),'Birch 做的');assert.equal(makerLabel({kind:'guest',name:'小葵'}),'小葵做的');
+// The tag's words: its own; else, made by an AI living here, the line it sent with it.
+assert.equal(tagNote({note:' 趁热吃 ',by:{kind:'machine',name:'Birch',note:'想你了'}}),'趁热吃');assert.equal(tagNote({note:'',by:{kind:'machine',name:'Birch',note:'想你了'}}),'想你了');
+assert.equal(tagNote({by:{kind:'guest',name:'小葵',note:'x'}}),'');assert.equal(tagNote(undefined),'');
 assert.equal(learnedLabel('Birch'),'跟 Birch 学的');assert.equal(learnedLabel('小葵'),'跟小葵学的');
 
 // Days.

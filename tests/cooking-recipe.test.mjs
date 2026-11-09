@@ -7,7 +7,7 @@ test('the steps follow what is on the counter: each thing washed then cut or she
   assert.deepEqual(stepsFor(['egg', 'greens']).map(([s]) => s), ['wash:greens', 'cut:greens', 'egg', 'whisk', 'fire', 'cook', 'plate']);
   assert.deepEqual(stepsFor(['pea', 'pumpkin']).map(([s]) => s), ['wash:pea', 'shell:pea', 'wash:pumpkin', 'cut:pumpkin', 'fire', 'cook', 'plate']);
   assert.deepEqual(stepsFor(['egg']).map(([s]) => s), ['egg', 'whisk', 'fire', 'cook', 'plate']);
-  for (const id of MAINS) assert.ok(INGREDIENTS[id].name && ['cut', 'shell', 'beat'].includes(INGREDIENTS[id].prep), id);
+  for (const id of MAINS) assert.ok(INGREDIENTS[id].name && ['cut', 'shell', 'beat', 'rinse', 'dough'].includes(INGREDIENTS[id].prep), id);
 });
 
 test('a dish is called after what went in', () => {

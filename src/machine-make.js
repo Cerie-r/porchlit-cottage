@@ -1,9 +1,10 @@
-// What an AI living here makes for her (src/machine-acts.js, the make tool): a bouquet, a dessert, a doll. Made out of
-// what this home's own benches have and no more: the flowers and vases on the florist's bench, the dessert table's
-// kinds, toppings and palette, the kinds of doll caught or given here and the doll things drawn from the capsule
-// machine. Then checked the way a thing left at the door by another home is (src/door-gifts.js), so what goes into
-// the home is only what makes the thing up. Shared by the server (the shape of an ask, what the benches have) and her
-// page (making it, when the act is let in).
+// What an AI living here makes for her (src/machine-acts.js, the make tool): a bouquet, a dessert, a doll, or a dish
+// off the stove. Made out of what this home's own benches have and no more: the flowers and vases on the florist's
+// bench, the dessert table's kinds, toppings and palette, the kinds of doll caught or given here and the doll things
+// drawn from the capsule machine, what is in the fridge. Then checked the way a thing left at the door by another home
+// is (src/door-gifts.js), so what goes into the home is only what makes the thing up; a dish never goes through the
+// door, so it is kept as the stove's own recipe keeps it (src/cooking-recipe.js). Shared by the server (the shape of
+// an ask, what the benches have) and her page (making it, when the act is let in).
 import {flowerKinds, vaseKinds} from './flower-kinds.js';
 import {DESSERT_LABELS, DESSERT_OPTIONS, DESSERT_TONES, availableBases, dessertProblems, freshDessert} from './dessert-recipe.js';
 import {ROLES} from './brick-recipe.js';
@@ -13,13 +14,20 @@ import {cleanCaught} from './claw.js';
 import {checkGift} from './door-gifts.js';
 import {validText} from './door-safety.js';
 import {stockOf, ownColours, costOf, short, left} from './bench-stock.js';
+import {EXTRAS, EXTRA_PRODUCE, HEATS, INGREDIENTS, ITEMS_MAX, METHODS, dishName, dishProblems, dishRecipe, freshDish, mishapsFor} from './cooking-recipe.js';
+import {MISHAP_IDS, mayHappen, mishapWords} from './cooking-mishaps.js';
 
-export const MAKE = ['bouquet', 'dessert', 'doll'];
+export const MAKE = ['bouquet', 'dessert', 'doll', 'dish'];
 const HEX = /^#[0-9a-f]{6}$/i;
 const ID = /^[a-z]{1,16}$/;
 const plain = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const length = s => [...s].length;
-const KINDS_SAID = {bouquet: '一束花', dessert: '一份甜品', doll: '一只玩偶'};
+const KINDS_SAID = {bouquet: '一束花', dessert: '一份甜品', doll: '一只玩偶', dish: '一道菜'};
+// How long a dish stays on the fire, as the AI may say it: just right is how a dish is when nothing is said.
+export const DISH_HEATS = ['tender', 'just', 'browned', 'caught'];
+// Rice and tea leaves only go into the little pot (src/cooking-recipe.js).
+const potOnly = id => !!INGREDIENTS[id]?.pot;
+const methodFor = items => items.some(potOnly) ? 'pot' : 'wok';
 // The colours her own benches offer (src/florist.jsx's VASE_COLORS and FLOWER_COLORS, src/atelier.jsx's SWATCHES;
 // tests/machine-make.test.mjs keeps them the same), named for the AI. A doll may also keep its kind's own colours.
 export const COLORS = {
@@ -56,6 +64,11 @@ export function benchOf(layout) {
     flowers: Object.keys(flowerKinds).filter(k => flowerKinds[k].open),
     vases: Object.keys(vaseKinds).filter(k => vaseKinds[k].open),
     dessert: {...DESSERT_OPTIONS, base: availableBases(), fruit: DESSERT_OPTIONS.fruit.filter(f => f === 'none' || left(stock, 'fruit', f) >= 1)},
+    // The stove's: eggs, rice, spring onion and garlic the kitchen always has; the rest is what is left in the fridge.
+    kitchen: {
+      items: Object.keys(INGREDIENTS).filter(id => INGREDIENTS[id].staple || left(stock, 'produce', INGREDIENTS[id].produce) >= 1),
+      extras: Object.keys(EXTRAS).filter(id => !EXTRA_PRODUCE[id] || left(stock, 'produce', EXTRA_PRODUCE[id]) >= 1)
+    },
     roles: Object.keys(ROLES),
     species,
     accessories: availableAccessories(dolls).filter(a => a !== 'none')
@@ -130,7 +143,42 @@ export function makeArgs(action, a) {
     }
     return {args: out};
   }
+  if (action === 'dish') {
+    // What goes in, in the order it goes in; which pot; what is sprinkled or drizzled on; how long on the fire.
+    const list = typeof a.items === 'string' ? [a.items] : a.items;
+    if (!Array.isArray(list) || !list.length || list.length > ITEMS_MAX || list.some(id => typeof id !== 'string' || !Object.hasOwn(INGREDIENTS, id)) || new Set(list).size !== list.length) {
+      return {problem: `items 是下锅的一到 ${ITEMS_MAX} 样，按下锅的先后写，每样一次（冰箱里有什么，look 的 bench 里有）。`};
+    }
+    const method = a.method ?? methodFor(list);
+    if (!METHODS.includes(method)) return {problem: 'method 填 wok（左边的炒锅，炒一盘）或者 pot（右边的小锅，煮一锅：汤、粥、面）。'};
+    if (method === 'wok' && list.some(potOnly)) return {problem: list.includes('rice') ? '米得用小锅熬粥：method 填 pot。' : '茶叶得用小锅煮：method 填 pot。'};
+    const extras = a.extras === undefined || a.extras === null ? [] : typeof a.extras === 'string' ? [a.extras] : a.extras;
+    if (!Array.isArray(extras) || extras.some(id => typeof id !== 'string' || !Object.hasOwn(EXTRAS, id)) || new Set(extras).size !== extras.length) {
+      return {problem: 'extras 是撒在上面、淋在上面的，每样一次（look 的 bench 里有）。'};
+    }
+    if (a.heat !== undefined && a.heat !== null && !DISH_HEATS.includes(a.heat)) return {problem: 'heat 填 tender（早点起锅）、just（正好）、browned（多一会儿）、caught（再久一点，锅底会糊一点）。'};
+    return {args: {...out, items: [...list], method, ...(extras.length ? {extras: [...extras]} : {}), ...(HEATS.includes(a.heat) ? {heat: a.heat} : {})}};
+  }
   return {problem: `能做的：${MAKE.join('、')}。`};
+}
+
+// A little chance of its own for each act (seed: its key), so letting the same act in again comes out the same.
+export function seeded(seed) {
+  let h = 2166136261;
+  for (const c of String(seed)) h = Math.imul(h ^ c.codePointAt(0), 16777619);
+  return () => {
+    h = (h + 0x6d2b79f5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+// What went its own way at the stove while the AI cooked (src/cooking-mishaps.js), in the order it would happen
+// there: cutting, shelling, into the oil, tossing, the boil. As kind as it is when she cooks.
+export function dishMishaps(items, method, rand = Math.random) {
+  const had = [];
+  for (const id of MISHAP_IDS) if (mishapsFor([id], items, method).length && mayHappen(id, had, rand)) had.push(id);
+  return had;
 }
 
 // ---- making it
@@ -144,8 +192,9 @@ const stem = (f, i) => {
 };
 
 // The thing out of an ask, as it will be kept (without where it goes or who made it), or {problem}: out of what the
-// benches have (bench, benchOf), and through the door's check.
-export function makeThing(action, args, bench) {
+// benches have (bench, benchOf), and through the door's check. seed: when it is really cooked (her page, the act's
+// key), a dish may have had a little accident on the way.
+export function makeThing(action, args, bench, {seed = null} = {}) {
   if (action === 'bouquet') {
     const closed = args.flowers.find(f => !bench.flowers.includes(f.type));
     if (closed) return {problem: `花台上还没有「${flowerKinds[closed.type]?.name || closed.type}」。`};
@@ -179,12 +228,32 @@ export function makeThing(action, args, bench) {
     const thing = checkGift(raw);
     return thing ? {thing} : {problem: '玩偶台做不出来这一只。'};
   }
+  if (action === 'dish') {
+    const extras = args.extras || [], mishaps = seed === null ? [] : dishMishaps(args.items, args.method, seeded(seed));
+    const raw = {...freshDish(args.items, args.method), name: args.name || dishName(args.items, args.method, extras), ...(extras.length ? {extras: [...extras]} : {}),
+      ...(HEATS.includes(args.heat) ? {heat: args.heat} : {}), ...(mishaps.length ? {mishaps} : {})};
+    const problems = dishProblems(raw);
+    if (problems.length) return {problem: `灶台做不出来：${problems.join('、')}。`};
+    // What is in the fridge: a find from going out goes into one dish (honey, walnuts and pine nuts a few).
+    const lack = bench.stock && short(bench.stock, costOf(raw));
+    if (lack) return {problem: lack.words};
+    return {thing: dishRecipe(raw)};
+  }
   return {problem: `能做的：${MAKE.join('、')}。`};
 }
 
-// What it is, in a few words: 一束花「给你的」, 一份草莓奶油蛋糕, 一只小狮子「阿狮」.
+// How making it is said: a dish is cooked (煮 in the pot, 炒 in the wok), anything else made.
+export const madeVerb = (action, args) => action === 'dish' ? (args?.method === 'pot' ? '煮' : '炒') : '做';
+// What went its own way while a dish was cooked, said once it is done (做的时候中间溢了一下锅。), or nothing.
+export function mishapLine(thing) {
+  const words = mishapWords(thing?.mishaps);
+  return words.length ? `做的时候${words.join('，又')}。` : '';
+}
+
+// What it is, in a few words: 一束花「给你的」, 一份草莓奶油蛋糕, 一只小狮子「阿狮」, 一锅蜂蜜南瓜粥.
 export function madeWords(action, args) {
   if (action === 'dessert') return args.name ? `一份「${args.name}」` : `一份${DESSERT_LABELS.base[args.base] || '甜品'}`;
+  if (action === 'dish') return `一${args.method === 'pot' ? '锅' : '盘'}${args.name ? `「${args.name}」` : dishName(Array.isArray(args.items) ? args.items : [], args.method, args.extras || [])}`;
   if (action === 'doll') return `一只${DOLL_LABELS.species[args.species] || '玩偶'}${args.name ? `「${args.name}」` : ''}`;
   return `${KINDS_SAID[action] || '一样东西'}${args.name ? `「${args.name}」` : ''}`;
 }

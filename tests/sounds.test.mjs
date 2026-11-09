@@ -8,7 +8,7 @@ const seeded=seed=>{let s=seed>>>0||1;return ()=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s
 const randFor=n=>paperSounds[n]?seeded(7):()=>.5;
 
 // Every place the house will make a sound has one.
-for(const n of ['click','tap','turn','drawerOpen','drawerClose','lid','glass','fork','wood','cloth','found','knock','tick','tock','porchLight','kiss','gacha','gachaTurn','gachaDrop','gachaOpen','blindbox','boxRibbon','boxLid','boxOpen'])assert.ok(sounds[n],'missing sound '+n);
+for(const n of ['click','tap','turn','drawerOpen','drawerClose','lid','glass','fork','wood','cloth','found','knock','tick','tock','porchLight','kiss','gacha','gachaTurn','gachaDrop','gachaOpen','blindbox','boxRibbon','boxLid','boxOpen','sizzle','flare','squirt'])assert.ok(sounds[n],'missing sound '+n);
 for(const n of ['page','note'])assert.ok(paperSounds[n],'missing sound '+n);
 assert.deepEqual(SOUND_NAMES,[...Object.keys(sounds),...Object.keys(paperSounds)]);
 

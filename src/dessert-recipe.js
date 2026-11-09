@@ -127,7 +127,13 @@ export function makerLabel(by) {
   if (!by || by.kind === 'self') return '自己做的';
   return by.name ? `${spaced(by.name.trim())}做的` : '别人做的';
 }
-export const learnedLabel = name => `跟${/^[A-Za-z0-9]/.test(name) ? ' ' : ''}${spaced(name.trim())}学的`;
+// The words on the tag under the name: its own, or else the line the AI who made it sent with it (src/machine-acts.js).
+export function tagNote(item) {
+  const own = typeof item?.note === 'string' ? item.note.trim() : '';
+  if (own) return own;
+  return item?.by?.kind === 'machine' && typeof item.by.note === 'string' ? item.by.note.trim() : '';
+}
+export const learnedLabel = name =>`跟${/^[A-Za-z0-9]/.test(name) ? ' ' : ''}${spaced(name.trim())}学的`;
 
 // Days are kept as the home's own calendar day, "2026-10-23".
 export function localDay(date = new Date()) {

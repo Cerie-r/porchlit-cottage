@@ -12,7 +12,8 @@ import {spotDefinitions, spotsFor} from './hiding-spots.js';
 import {SPOT_IDS, cleanHideSeek, shiftDay, spotLabels} from './hide-and-seek.js';
 import {cutText, validText} from './door-safety.js';
 import {inLine, leading} from './words.js';
-import {MAKE, benchOf, madeWords, makeArgs, makeThing} from './machine-make.js';
+import {MAKE, benchOf, madeVerb, madeWords, makeArgs, makeThing, mishapLine} from './machine-make.js';
+import {DOME, domeItem} from './dessert-state.js';
 import {costOf, spend} from './bench-stock.js';
 import {TRIPS_A_DAY, atDoor, canGoOut, cleanExplore, invitedToday, inviteOut} from './explore-trips.js';
 import {WORDS_MAX, cleanBottles, threwBottle} from './bottles.js';
@@ -478,7 +479,12 @@ export function actArgs(tool, action, raw = {}) {
     const made = makeArgs(action, a);
     if (made.problem) return made;
     const spot = a.spot ?? 'bag';
-    if (spot !== 'bag' && spot !== 'table' && !spotOf(spot)) return {problem: 'spot 填 bag（她的背包）、table（客厅茶几上），或者一个藏点的编号（藏起来让她找）。'};
+    // Something to eat can go under the glass dome on the dining table; a dish is for eating while it is hot, not
+    // for hiding.
+    const eaten = action === 'dessert' || action === 'dish';
+    if (spot === DOME && !eaten) return {problem: '餐桌的玻璃罩里只放吃的：甜品、菜。'};
+    if (action === 'dish' && spot !== 'bag' && spot !== 'table' && spot !== DOME) return {problem: '菜不藏起来，趁热吃：spot 填 dome（餐桌的玻璃罩里）、table（客厅茶几上）或者 bag（她的背包）。'};
+    if (spot !== 'bag' && spot !== 'table' && spot !== DOME && !spotOf(spot)) return {problem: `spot 填 bag（她的背包）、table（客厅茶几上）${eaten ? '、dome（餐桌的玻璃罩里）' : ''}，或者一个藏点的编号（藏起来让她找）。`};
     if (spotOf(spot)) {
       const h = hints();
       if (h) return {problem: h};
@@ -601,6 +607,12 @@ export function prepareAct(layout, {tool, action, args}, {waiting = [], closet =
       const free = spotsFor('table').filter(s => !tableTaken(items, s.slot)).length - waiting.filter(onTable).length;
       if (free <= 0) return {problem: '茶几上放满了，换个地方。'};
     }
+    // The dome holds one thing; what she has under it stays.
+    if (args.spot === DOME) {
+      const under = domeItem(items);
+      if (under) return {problem: `餐桌的玻璃罩里已经有「${under.name || '一样吃的'}」了，等${her}吃掉再放；或者放进背包、茶几上。`};
+      if (waiting.some(a => a.tool === 'make' && a.args?.spot === DOME)) return {problem: '已经有一件排着的事要放进玻璃罩了，罩子里只放得下一样。'};
+    }
     return {args};
   }
   if (tool === 'decorate') {
@@ -665,7 +677,7 @@ export function actLine({tool, action, args}, layout, {her = '她', closet = nul
   if (tool === 'write' && action === 'bottle') return `往海里投一只漂流瓶（不署名，漂到别人家的湖边；捞到的人看得到是机写的，${her}也看得到你写了什么）`;
   if (tool === 'make' && MAKE.includes(action)) {
     const s = spotOf(a.spot);
-    return `做${madeWords(action, a)}，${a.spot === 'table' ? '放在客厅茶几上' : s ? `藏在${spotName(s)}` : `放进${her}的背包`}`;
+    return `${madeVerb(action, a)}${madeWords(action, a)}，${a.spot === 'table' ? '放在客厅茶几上' : a.spot === DOME ? '放在餐桌的玻璃罩里' : s ? `藏在${spotName(s)}` : `放进${her}的背包`}`;
   }
   return `${tool} ${action}`;
 }
@@ -824,25 +836,32 @@ function made(home, act, ctx) {
   const items = home.creations || [], id = 'machine-' + act.key, where = act.args.spot, her = ctx.him === '她' ? '他' : '她';
   if (items.some(i => i?.id === id)) return refuse('这样东西已经在家里了。');
   if (theirMade(items) >= LIMITS.made) return refuse(`家里已经有 ${LIMITS.made} 样机做的东西了，这样没做（送掉、吃掉的不算）。`);
-  const bench = benchOf(home), thing = makeThing(act.action, act.args, bench);
+  // A dish is cooked now, at her stove: whatever goes its own way there comes of the act's own key.
+  const bench = benchOf(home), thing = makeThing(act.action, act.args, bench, {seed: act.key});
   if (thing.problem) return refuse(thing.problem);
   // What it used up comes out of the same jars, bottles and handfuls as hers (src/bench-stock.js).
   home = {...home, spent: spend(home.spent, costOf(thing.thing, {own: new Set(bench.own || [])}))};
-  const words = madeWords(act.action, act.args);
+  const words = madeWords(act.action, act.args), verb = madeVerb(act.action, act.args), happened = mishapLine(thing.thing);
   // Who made it, by the name she calls them here (what a dessert's own tags say), short enough for every tag; and
   // why, kept on it (the card says it once, the backpack keeps it).
   const by = byOf(act), name = cutText(cleanMachine(home.machine).called[by.id] || by.name, 20);
   const base = {...thing.thing, id, by: {kind: 'machine', id: by.id, name, ...(act.args.note ? {note: act.args.note} : {})}, madeOn: ctx.day};
-  if (where === 'bag') return {ok: true, home: {...home, creations: [...items, {...base, location: 'bag', slot: 0}]}, what: `做了${words}给你，在背包里`, said: `做好了，放进了${her}的背包。`, ref: id};
+  if (where === 'bag') return {ok: true, home: {...home, creations: [...items, {...base, location: 'bag', slot: 0}]}, what: `${verb}了${words}给你，在背包里`, said: `做好了，放进了${her}的背包。${happened}`, ref: id};
   if (where === 'table') {
     const free = freeOnTable(items);
     if (!free) return refuse('茶几上放满了，没放。');
-    return {ok: true, home: {...home, creations: [...items, {...base, location: 'table', slot: free.slot, spotId: free.id}]}, what: `做了${words}给你，放在茶几上`, said: '做好了，放在客厅的茶几上。', ref: id};
+    return {ok: true, home: {...home, creations: [...items, {...base, location: 'table', slot: free.slot, spotId: free.id}]}, what: `${verb}了${words}给你，放在茶几上`, said: `做好了，放在客厅的茶几上。${happened}`, ref: id};
+  }
+  // Under the glass dome on the dining table, waiting for the two of them to sit down to it.
+  if (where === DOME) {
+    const under = domeItem(items);
+    if (under) return refuse(`餐桌的玻璃罩里已经有「${under.name || '一样吃的'}」了，没放。`);
+    return {ok: true, home: {...home, creations: [...items, {...base, location: DOME, slot: 0}]}, what: `${verb}了${words}给你，放在餐桌的玻璃罩里`, said: `做好了，放在餐桌的玻璃罩里。${happened}`, ref: id};
   }
   const s = spotOf(where);
   if (occupant(items, s)) return refuse(`${spotName(s)}已经放着东西了，没藏。`);
   if (hiddenThings(items).length >= LIMITS.hidden) return refuse(`家里已经藏着 ${LIMITS.hidden} 样${her}还没找到的了，没藏。`);
-  return {ok: true, home: {...home, creations: [...items, {...base, location: s.location, slot: s.slot, spotId: s.id, hid: hidBy(act, ctx, s)}]}, what: `做了${words}，藏起来了`, said: `做好了，藏在${spotName(s)}。`, ref: id};
+  return {ok: true, home: {...home, creations: [...items, {...base, location: s.location, slot: s.slot, spotId: s.id, hid: hidBy(act, ctx, s)}]}, what: `${verb}了${words}，藏起来了`, said: `做好了，藏在${spotName(s)}。${happened}`, ref: id};
 }
 
 // Going out together (src/explore-trips.js): he says 走. She sees it at the front door and they set off when she says
